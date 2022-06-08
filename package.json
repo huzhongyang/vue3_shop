@@ -9,6 +9,7 @@
     "lint": "eslint src --fix --ext .ts,.tsx,.vue,.js,.jsx"
   },
   "dependencies": {
+    "axios": "^0.27.2",
     "element-plus": "^2.2.2",
     "vue": "^3.2.37",
     "vue-global-api": "^0.4.1",

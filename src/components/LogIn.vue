@@ -12,7 +12,7 @@
                  :rules="formRules"
         >
           <el-form-item prop="userName">
-            <el-input v-model="loginForm.userName"
+            <el-input v-model="loginForm.username"
                       placeholder="请输入账号"
             >
               <template #prefix>
@@ -48,37 +48,38 @@
                    auto-insert-space
                    @click="login(loginFormRef)"
         >
-          登录</el-button>
+          登录
+        </el-button>
       </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-    import { FormInstance, FormRules } from 'element-plus'
+    import { ElMessage, FormInstance, FormRules } from 'element-plus'
     import { ref } from 'vue'
+    import { login as postLogin } from '../api'
 
     interface LoginForm {
-        userName: string,
+        username: string,
         password: string
     }
 
     // 登录表单
     const loginForm = ref<LoginForm>({
-        userName: '',
+        username: '',
         password: ''
     })
     // 登录表单 Ref
     const loginFormRef = ref<FormInstance>()
     // 登录表单验证规则
     const formRules = ref<FormRules>({
-        userName: [
+        username: [
             {
                 required: true,
                 message: '请输入账号!',
                 trigger: 'blur'
             }
-
         ],
         password: [
             {
@@ -87,9 +88,9 @@
                 trigger: 'change'
             },
             {
-                min: 3,
-                max: 5,
-                message: '长度在 3~5 之间'
+                min: 4,
+                max: 10,
+                message: '长度在 4~10 之间'
             }
         ]
     })
@@ -97,12 +98,13 @@
     // 登录按钮
     function login (loginFormRef: FormInstance) {
         if (!loginFormRef) return
-        loginFormRef.validate((validate) => {
-            if (validate) {
-                console.log('success')
-            } else {
-                console.log('error')
-            }
+        loginFormRef.validate(async (validate) => {
+            if (!validate) return false
+            // 为解构赋值提供类型
+            const res= await postLogin.login(loginForm.value)
+            console.log(res)
+            if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+            console.log(res.data?.token)
         })
     }
 
