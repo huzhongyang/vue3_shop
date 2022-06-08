@@ -6,11 +6,19 @@ import '@vue/runtime-core'
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElButton: typeof import('element-plus/es')['ElButton']
-    ElDivider: typeof import('element-plus/es')['ElDivider']
+    ElForm: typeof import('element-plus/es')['ElForm']
+    ElFormItem: typeof import('element-plus/es')['ElFormItem']
     ElIcon: typeof import('element-plus/es')['ElIcon']
-    ICarbonAccessibility: typeof import('~icons/carbon/accessibility')['default']
-    ICarbonHail: typeof import('~icons/carbon/hail')['default']
-    IIconoirAppleSwift: typeof import('~icons/iconoir/apple-swift')['default']
+    ElInput: typeof import('element-plus/es')['ElInput']
+    IAntDesignShopTwotone: typeof import('~icons/ant-design/shop-twotone')['default']
+    IBiShop: typeof import('~icons/bi/shop')['default']
+    IIconParkTwotoneShop: typeof import('~icons/icon-park/twotone-shop')['default']
+    IPhUserFill: typeof import('~icons/ph/user-fill')['default']
+    IRiLockPasswordFill: typeof import('~icons/ri/lock-password-fill')['default']
+    LogIn: typeof import('./src/components/LogIn.vue')['default']
+    RouterLink: typeof import('vue-router')['RouterLink']
+    RouterView: typeof import('vue-router')['RouterView']
+    ShopHome: typeof import('./src/components/ShopHome.vue')['default']
   }
 }
 

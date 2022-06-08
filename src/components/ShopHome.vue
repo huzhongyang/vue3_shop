@@ -1,5 +1,5 @@
 <template>
-  <router-view />
+  <h1>Welcom Home</h1>
 </template>
 
 <script setup lang="ts">

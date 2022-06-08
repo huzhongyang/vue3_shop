@@ -11,6 +11,7 @@ module.exports = {
         'vue-global-api',
         'plugin:vue/vue3-recommended',
         'plugin:@typescript-eslint/recommended',
+        'prettier',
     ],
     parser: 'vue-eslint-parser',
     parserOptions: {
@@ -100,5 +101,9 @@ module.exports = {
         // note you must disable the base rule as it can report incorrect errors
         'no-unused-vars': 'off',
         '@typescript-eslint/no-unused-vars': ['error'],
+        // 模板字符串 空格
+        // 'template-curly-spacing': ['error', 'always'],
+        // 链式调用换行
+        // 'newline-per-chained-call': ['error', { ignoreChainWithDepth: 2 }],
     },
 }
