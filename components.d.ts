@@ -11,8 +11,6 @@ declare module '@vue/runtime-core' {
     ElIcon: typeof import('element-plus/es')['ElIcon']
     ElInput: typeof import('element-plus/es')['ElInput']
     IAntDesignShopTwotone: typeof import('~icons/ant-design/shop-twotone')['default']
-    IBiShop: typeof import('~icons/bi/shop')['default']
-    IIconParkTwotoneShop: typeof import('~icons/icon-park/twotone-shop')['default']
     IPhUserFill: typeof import('~icons/ph/user-fill')['default']
     IRiLockPasswordFill: typeof import('~icons/ri/lock-password-fill')['default']
     LogIn: typeof import('./src/components/LogIn.vue')['default']

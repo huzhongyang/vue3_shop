@@ -1,20 +1,18 @@
 <template>
   <div class="wrapper">
     <div class="login-box">
+      <!-- 头部图标 -->
       <div class="login-icon">
         <el-icon size="100px">
           <i-ant-design-shop-twotone />
         </el-icon>
       </div>
+
+      <!-- form 表单 -->
       <div class="login-form">
-        <el-form ref="loginFormRef"
-                 :model="loginForm"
-                 :rules="formRules"
-        >
+        <el-form ref="loginFormRef" :model="loginForm" :rules="formRules">
           <el-form-item prop="userName">
-            <el-input v-model="loginForm.username"
-                      placeholder="请输入账号"
-            >
+            <el-input v-model="loginForm.username" placeholder="请输入账号">
               <template #prefix>
                 <el-icon>
                   <i-ph-user-fill />
@@ -23,11 +21,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password"
-                      type="password"
-                      show-password
-                      placeholder="请输入密码"
-            >
+            <el-input v-model="loginForm.password" type="password" show-password placeholder="请输入密码">
               <template #prefix>
                 <el-icon>
                   <i-ri-lock-password-fill />
@@ -37,18 +31,18 @@
           </el-form-item>
         </el-form>
       </div>
+
+      <!-- 底部按钮 -->
       <div class="login-footer">
         <el-button type="info"
                    auto-insert-space
                    @click="resetForm(loginFormRef)"
-        >
-          重置
+        >重置
         </el-button>
         <el-button type="primary"
                    auto-insert-space
                    @click="login(loginFormRef)"
-        >
-          登录
+        >登录
         </el-button>
       </div>
     </div>
@@ -56,63 +50,63 @@
 </template>
 
 <script setup lang="ts">
-    import { ElMessage, FormInstance, FormRules } from 'element-plus'
-    import { ref } from 'vue'
-    import { login as postLogin } from '../api'
+  import { ElMessage, FormInstance, FormRules } from 'element-plus'
+  import { ref } from 'vue'
+  import { login as postLogin } from '../api'
 
-    interface LoginForm {
-        username: string,
-        password: string
-    }
+  interface LoginForm {
+    username: string
+    password: string
+  }
 
-    // 登录表单
-    const loginForm = ref<LoginForm>({
-        username: '',
-        password: ''
+  // 登录表单
+  const loginForm = ref<LoginForm>({
+    username: '',
+    password: ''
+  })
+  // 登录表单 Ref
+  const loginFormRef = ref<FormInstance>()
+  // 登录表单验证规则
+  const formRules = ref<FormRules>({
+    username: [
+      {
+        required: true,
+        message: '请输入账号!',
+        trigger: 'blur'
+      }
+    ],
+    password: [
+      {
+        required: true,
+        message: '请输入密码!',
+        trigger: 'change'
+      },
+      {
+        min: 4,
+        max: 10,
+        message: '长度在 4~10 之间'
+      }
+    ]
+  })
+
+  // 登录按钮
+  function login (loginFormRef: FormInstance) {
+    if (!loginFormRef) return
+    loginFormRef.validate(async (validate) => {
+      if (!validate) return false
+      // 为解构赋值提供类型
+      const res = await postLogin.login(loginForm.value)
+      console.log(res)
+      if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+      console.log(res.data?.token)
     })
-    // 登录表单 Ref
-    const loginFormRef = ref<FormInstance>()
-    // 登录表单验证规则
-    const formRules = ref<FormRules>({
-        username: [
-            {
-                required: true,
-                message: '请输入账号!',
-                trigger: 'blur'
-            }
-        ],
-        password: [
-            {
-                required: true,
-                message: '请输入密码!',
-                trigger: 'change'
-            },
-            {
-                min: 4,
-                max: 10,
-                message: '长度在 4~10 之间'
-            }
-        ]
-    })
+  }
 
-    // 登录按钮
-    function login (loginFormRef: FormInstance) {
-        if (!loginFormRef) return
-        loginFormRef.validate(async (validate) => {
-            if (!validate) return false
-            // 为解构赋值提供类型
-            const res= await postLogin.login(loginForm.value)
-            console.log(res)
-            if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
-            console.log(res.data?.token)
-        })
-    }
-
-    // 重置按钮
-    function resetForm (loginFormRef: FormInstance) {
-        if (!loginFormRef) return
-        loginFormRef.resetFields()
-    }
+  // 重置按钮
+  function resetForm (loginFormRef: FormInstance) {
+    if (!loginFormRef) return
+    loginFormRef.resetFields()
+  }
 </script>
 
 <style scoped>
