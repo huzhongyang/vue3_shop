@@ -1,10 +1,34 @@
 <template>
-  <h1>Welcom Home</h1>
-  <el-button @click="logout"
-             type="primary"
-             auto-insert-space
-  >注销
-  </el-button>
+  <el-container>
+
+    <!-- top -->
+    <el-header>
+      <div class="top">
+        <el-icon color="white" size="40px">
+          <i-bi-shop />
+        </el-icon>
+        <h2 style="color: white">电商后台管理系统</h2>
+        <el-button @click="logout"
+                   type="info"
+                   auto-insert-space
+                   class="logout"
+        >注销
+        </el-button>
+      </div>
+    </el-header>
+    <el-container>
+
+      <!-- aside -->
+      <el-aside width="200px">
+
+      </el-aside>
+
+      <!-- main -->
+      <el-main>
+
+      </el-main>
+    </el-container>
+  </el-container>
 </template>
 
 <script setup lang="ts">
@@ -19,5 +43,27 @@
 </script>
 
 <style scoped>
+  .el-container {
+    height: 100%;
+  }
 
+  .el-header {
+    background-color: #363C40;
+  }
+
+  .top {
+    display: flex;
+    align-items: center;
+    column-gap: 20px;
+    height: 100%;
+  }
+
+  .logout {
+    position: absolute;
+    right: 20px;
+  }
+
+  .el-aside {
+    background-color: #313742;
+  }
 </style>
