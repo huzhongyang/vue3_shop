@@ -5,13 +5,14 @@ import { createRouter, createWebHistory } from 'vue-router'
 import routes from './routes'
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes
 })
 
-router.beforeEach((to) => {
-    console.log('前置路由')
-    console.log(`to: ${to}`)
+router.beforeEach((to, _, next) => {
+  if (to.name === 'login') return next()
+  if (!window.localStorage.getItem('loginToken')) return next({ name: 'login' })
+  next()
 })
 
 export default router

@@ -21,7 +21,7 @@
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
-            <el-input v-model="loginForm.password" type="password" show-password placeholder="请输入密码">
+            <el-input v-model="loginForm.password" placeholder="请输入密码" type="password" show-password>
               <template #prefix>
                 <el-icon>
                   <i-ri-lock-password-fill />
@@ -34,14 +34,14 @@
 
       <!-- 底部按钮 -->
       <div class="login-footer">
-        <el-button type="info"
+        <el-button @click="resetForm(loginFormRef)"
                    auto-insert-space
-                   @click="resetForm(loginFormRef)"
+                   type="info"
         >重置
         </el-button>
-        <el-button type="primary"
+        <el-button @click="login(loginFormRef)"
+                   type="primary"
                    auto-insert-space
-                   @click="login(loginFormRef)"
         >登录
         </el-button>
       </div>
@@ -49,10 +49,11 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
   import { ElMessage, FormInstance, FormRules } from 'element-plus'
   import { ref } from 'vue'
   import { login as postLogin } from '../api'
+  import router from '../router'
 
   interface LoginForm {
     username: string
@@ -94,11 +95,10 @@
     if (!loginFormRef) return
     loginFormRef.validate(async (validate) => {
       if (!validate) return false
-      // 为解构赋值提供类型
       const res = await postLogin.login(loginForm.value)
-      console.log(res)
       if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
-      console.log(res.data?.token)
+      window.localStorage.setItem('loginToken', res.data?.token as string)
+      await router.push('/home')
     })
   }
 
