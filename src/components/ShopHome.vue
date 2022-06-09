@@ -20,7 +20,29 @@
 
       <!-- aside -->
       <el-aside width="200px">
+        <el-radio-button v-model="isCollapse" @click="isCollapse=!isCollapse">|||</el-radio-button>
+        <el-menu default-active="1"
+                 unique-opened
+        >
+          <el-sub-menu index="1">
+            <template #title>
+              <el-icon>
+                <i-ic-outline-shopping-bag />
+              </el-icon>
+              <span>one</span>
+            </template>
+            <el-menu-item>
+              1-1
+            </el-menu-item>
 
+          </el-sub-menu>
+          <el-menu-item>
+            2-1
+          </el-menu-item>
+          <el-menu-item>
+            2-2
+          </el-menu-item>
+        </el-menu>
       </el-aside>
 
       <!-- main -->
@@ -32,9 +54,21 @@
 </template>
 
 <script setup lang="ts">
+  import { ElMessage } from 'element-plus'
+  import { onMounted } from 'vue'
+  import { getAsideMenus } from '../api'
   import router from '../router'
 
-  function logout () {
+  let isCollapse = ref(false)
+
+  onMounted(async () => {
+    const asideMenus = await getAsideMenus()
+    console.log(asideMenus)
+    if (asideMenus.meta.status !== 200) ElMessage.error(asideMenus.meta.msg)
+    ElMessage.success(asideMenus.meta.msg)
+  })
+
+  function logout() {
     window.localStorage.removeItem('loginToken')
     // 会使页面出现短暂空白 并且耗费性能
     // window.location.reload()
@@ -65,5 +99,18 @@
 
   .el-aside {
     background-color: #313742;
+  }
+
+  .el-radio-button {
+    width: 100%;
+  }
+
+  .el-menu, .el-sub-menu, .el-menu-item {
+    background-color: #313742;
+    color: white;
+  }
+
+  .el-menu .el-icon, span {
+    color: white;
   }
 </style>
