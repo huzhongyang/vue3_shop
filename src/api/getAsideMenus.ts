@@ -1,11 +1,11 @@
 import axios from 'axios'
 
-interface MenuItem {
+export interface MenuItem {
   id: number,
   authName: string,
   path: string,
   children: [MenuItem | []],
-  order: number
+  order: number | null
 }
 
 interface AsideMenusData {
@@ -13,7 +13,7 @@ interface AsideMenusData {
   meta: { msg: string, status: number }
 }
 
-async function getAsideMenus () {
+async function getAsideMenus() {
   const { data: res }: { data: AsideMenusData } = await axios.get('menus')
   return res
 }

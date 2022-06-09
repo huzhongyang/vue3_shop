@@ -21,27 +21,29 @@
       <!-- aside -->
       <el-aside width="200px">
         <el-radio-button v-model="isCollapse" @click="isCollapse=!isCollapse">|||</el-radio-button>
-        <el-menu default-active="1"
+        <el-menu @open="openAsideMenu"
+                 @close="closeAsideMenu"
                  unique-opened
+                 text-color="#333744"
         >
-          <el-sub-menu index="1">
+          <el-sub-menu v-for="(asideMenu) in asideMenus"
+                       :key="asideMenu.id"
+                       :index="`${asideMenu.id}`"
+                       :popper-offset="0"
+          >
             <template #title>
               <el-icon>
                 <i-ic-outline-shopping-bag />
               </el-icon>
-              <span>one</span>
+              <span> {{ asideMenu.authName }}</span>
             </template>
-            <el-menu-item>
-              1-1
+            <el-menu-item v-for="(asideMenuItem) in asideMenu.children"
+                          :key="asideMenuItem.id"
+            >
+              {{ asideMenuItem.authName }}
             </el-menu-item>
-
           </el-sub-menu>
-          <el-menu-item>
-            2-1
-          </el-menu-item>
-          <el-menu-item>
-            2-2
-          </el-menu-item>
+
         </el-menu>
       </el-aside>
 
@@ -55,17 +57,35 @@
 
 <script setup lang="ts">
   import { ElMessage } from 'element-plus'
-  import { onMounted } from 'vue'
+  import { onMounted, Ref } from 'vue'
   import { getAsideMenus } from '../api'
+  import { MenuItem } from '../api/getAsideMenus'
   import router from '../router'
 
   let isCollapse = ref(false)
+  /*
+   let a = ref<[MenuItem]>()
+   =>  a: [MenuItem] | undefined
+   */
+  // 泛型的类型未知时 用 Ref<T>
+  let asideMenus = ref() as Ref<[MenuItem]>
+
+  // 点击打开左侧菜单
+  function openAsideMenu(key: string, keyPath: string[]) {
+    console.log(`${ key }: ${ keyPath }`)
+  }
+
+  // 点击关闭左侧菜单
+  function closeAsideMenu() {
+    console.log('close')
+  }
 
   onMounted(async () => {
-    const asideMenus = await getAsideMenus()
-    console.log(asideMenus)
-    if (asideMenus.meta.status !== 200) ElMessage.error(asideMenus.meta.msg)
-    ElMessage.success(asideMenus.meta.msg)
+    const asideMenusData = await getAsideMenus()
+    console.log(asideMenusData)
+    if (asideMenusData.meta.status !== 200) ElMessage.error(asideMenusData.meta.msg)
+    ElMessage.success(asideMenusData.meta.msg)
+    asideMenus.value = asideMenusData.data
   })
 
   function logout() {
@@ -97,20 +117,20 @@
     right: 20px;
   }
 
-  .el-aside {
-    background-color: #313742;
-  }
+  /*.el-aside {*/
+  /*  background-color: #313742;*/
+  /*}*/
 
   .el-radio-button {
     width: 100%;
   }
 
-  .el-menu, .el-sub-menu, .el-menu-item {
-    background-color: #313742;
-    color: white;
-  }
+  /*.el-menu, .el-sub-menu, .el-menu-item {*/
+  /*  background-color: #313742;*/
+  /*  color: white;*/
+  /*}*/
 
-  .el-menu .el-icon, span {
-    color: white;
-  }
+  /*.el-menu .el-icon, span {*/
+  /*  color: white;*/
+  /*}*/
 </style>
