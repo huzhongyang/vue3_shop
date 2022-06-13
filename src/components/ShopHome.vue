@@ -54,9 +54,10 @@
 
       <!-- main -->
       <el-main>
-        <router-view>
-
-        </router-view>
+        <!-- 异步组件用 Suspense 包裹 -->
+        <Suspense>
+          <router-view />
+        </Suspense>
       </el-main>
     </el-container>
   </el-container>
@@ -90,7 +91,6 @@
   onMounted(async () => {
     try {
       const asideMenusData = await getAsideMenus()
-      console.log(asideMenusData)
       if (asideMenusData.meta.status !== 200) ElMessage.error(asideMenusData.meta.msg)
       ElMessage.success(asideMenusData.meta.msg)
       asideMenus.value = asideMenusData.data
