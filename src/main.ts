@@ -5,4 +5,7 @@ import App from './App.vue'
 import './assets/css/global.css'
 import router from './router'
 
-createApp(App).use(ElementPlus, { locale: zhCn }).use(router).mount('#app')
+createApp(App)
+  .use(ElementPlus, { locale: zhCn })
+  .use(router)
+  .mount('#app')

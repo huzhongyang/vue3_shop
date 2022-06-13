@@ -15,6 +15,7 @@ interface AsideMenusData {
 
 async function getAsideMenus() {
   const { data: res }: { data: AsideMenusData } = await axios.get('menus')
+  if (res.meta.status === 400) throw new Error(res.meta.msg)
   return res
 }
 

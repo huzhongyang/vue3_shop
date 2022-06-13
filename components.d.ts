@@ -6,6 +6,8 @@ import '@vue/runtime-core'
 declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     ElAside: typeof import('element-plus/es')['ElAside']
+    ElBreadcrumb: typeof import('element-plus/es')['ElBreadcrumb']
+    ElBreadcrumbItem: typeof import('element-plus/es')['ElBreadcrumbItem']
     ElButton: typeof import('element-plus/es')['ElButton']
     ElContainer: typeof import('element-plus/es')['ElContainer']
     ElForm: typeof import('element-plus/es')['ElForm']
@@ -17,6 +19,7 @@ declare module '@vue/runtime-core' {
     ElMenu: typeof import('element-plus/es')['ElMenu']
     ElMenuItem: typeof import('element-plus/es')['ElMenuItem']
     ElRadioButton: typeof import('element-plus/es')['ElRadioButton']
+    ElRow: typeof import('element-plus/es')['ElRow']
     ElSubMenu: typeof import('element-plus/es')['ElSubMenu']
     IAntDesignShopTwotone: typeof import('~icons/ant-design/shop-twotone')['default']
     IBiShop: typeof import('~icons/bi/shop')['default']
@@ -27,6 +30,8 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ShopHome: typeof import('./src/components/ShopHome.vue')['default']
+    ShopHomeMain: typeof import('./src/components/ShopHomeMain.vue')['default']
+    ShopUsers: typeof import('./src/components/ShopUsers.vue')['default']
   }
 }
 

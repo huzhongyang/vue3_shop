@@ -19,12 +19,15 @@
     <el-container>
 
       <!-- aside -->
-      <el-aside width="200px">
-        <el-radio-button v-model="isCollapse" @click="isCollapse=!isCollapse">|||</el-radio-button>
-        <el-menu @open="openAsideMenu"
+      <el-aside :width="!isCollapse?'170px':'64px'">
+        <el-button @click="isCollapse=!isCollapse" type="default" plain>|||</el-button>
+        <el-menu :collapse="isCollapse"
+                 :collapse-transition="false"
+                 @open="openAsideMenu"
                  @close="closeAsideMenu"
                  unique-opened
                  text-color="#333744"
+                 router
         >
           <el-sub-menu v-for="(asideMenu) in asideMenus"
                        :key="asideMenu.id"
@@ -39,6 +42,8 @@
             </template>
             <el-menu-item v-for="(asideMenuItem) in asideMenu.children"
                           :key="asideMenuItem.id"
+                          :index="`${asideMenuItem.id}`"
+                          :route="asideMenuItem.path"
             >
               {{ asideMenuItem.authName }}
             </el-menu-item>
@@ -49,7 +54,9 @@
 
       <!-- main -->
       <el-main>
+        <router-view>
 
+        </router-view>
       </el-main>
     </el-container>
   </el-container>
@@ -81,12 +88,29 @@
   }
 
   onMounted(async () => {
-    const asideMenusData = await getAsideMenus()
-    console.log(asideMenusData)
-    if (asideMenusData.meta.status !== 200) ElMessage.error(asideMenusData.meta.msg)
-    ElMessage.success(asideMenusData.meta.msg)
-    asideMenus.value = asideMenusData.data
+    try {
+      const asideMenusData = await getAsideMenus()
+      console.log(asideMenusData)
+      if (asideMenusData.meta.status !== 200) ElMessage.error(asideMenusData.meta.msg)
+      ElMessage.success(asideMenusData.meta.msg)
+      asideMenus.value = asideMenusData.data
+    } catch (e) {
+      await router.push('login')
+    }
   })
+
+  // watch(isCollapse, () => {
+  //   const collapseBtn = document.querySelector('.el-aside .el-button') as Element
+  //   if (!isCollapse.value) {
+  //     console.log(collapseBtn)
+  //     collapseBtn.classList.add('collapse')
+  //     console.log(collapseBtn.classList)
+  //   } else {
+  //     collapseBtn.classList.remove('collapse')
+  //     console.log(collapseBtn.classList)
+  //   }
+  //   nextTick()
+  // })
 
   function logout() {
     window.localStorage.removeItem('loginToken')
@@ -117,20 +141,16 @@
     right: 20px;
   }
 
-  /*.el-aside {*/
-  /*  background-color: #313742;*/
-  /*}*/
-
-  .el-radio-button {
-    width: 100%;
+  .el-aside .el-button {
+    width: 170px;
+    border-radius: 0;
   }
 
-  /*.el-menu, .el-sub-menu, .el-menu-item {*/
-  /*  background-color: #313742;*/
-  /*  color: white;*/
-  /*}*/
+  .collapse {
+    width: 64px;
+  }
 
-  /*.el-menu .el-icon, span {*/
-  /*  color: white;*/
-  /*}*/
+  .el-menu {
+    height: 100%;
+  }
 </style>
