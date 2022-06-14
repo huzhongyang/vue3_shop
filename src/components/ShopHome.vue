@@ -23,11 +23,12 @@
         <el-button @click="isCollapse=!isCollapse" type="default" plain>|||</el-button>
         <el-menu :collapse="isCollapse"
                  :collapse-transition="false"
-                 @open="openAsideMenu"
-                 @close="closeAsideMenu"
-                 unique-opened
-                 text-color="#333744"
+                 active-text-color="#409EFF"
                  router
+                 text-color="#333744"
+                 unique-opened
+                 @close="closeAsideMenu"
+                 @open="openAsideMenu"
         >
           <el-sub-menu v-for="(asideMenu) in asideMenus"
                        :key="asideMenu.id"
@@ -54,9 +55,10 @@
 
       <!-- main -->
       <el-main>
-        <router-view>
-
-        </router-view>
+        <!-- 异步组件用 Suspense 包裹 -->
+        <Suspense>
+          <router-view />
+        </Suspense>
       </el-main>
     </el-container>
   </el-container>
@@ -90,12 +92,11 @@
   onMounted(async () => {
     try {
       const asideMenusData = await getAsideMenus()
-      console.log(asideMenusData)
       if (asideMenusData.meta.status !== 200) ElMessage.error(asideMenusData.meta.msg)
       ElMessage.success(asideMenusData.meta.msg)
       asideMenus.value = asideMenusData.data
     } catch (e) {
-      await router.push('login')
+      await router.push('/login')
     }
   })
 
