@@ -15,7 +15,7 @@ interface GetUserListResponse {
 
 export interface User {
   id: number,
-  userename: string,
+  username: string,
   mobile: string,
   type: number,
   email: string,
@@ -38,6 +38,13 @@ export interface PostUser {
   mobile?: string
 }
 
+// 修改用户信息
+export interface EditeUserInfo {
+  username: string,
+  email: string,
+  mobile: string
+}
+
 export async function getUserList(queryParam: QueryParam) {
   const { data: res }: { data: GetUserListResponse } = await axios.get('users', { params: queryParam })
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
@@ -53,7 +60,20 @@ export async function putUserState(id: number, state: boolean) {
 // 添加用户
 export async function postUser(postUser: PostUser) {
   const { data: res }: { data: GetUserListResponse } = await axios.post('users', postUser)
-  if (res.meta.status !== 200) throw ElMessage.error(res.meta.msg)
+  if (res.meta.status !== 201) throw ElMessage.error(res.meta.msg)
   ElMessage.success(res.meta.msg)
+  return res
+}
+
+// 修改用户信息
+export async function putUserInfo(id: number, userInfo: EditeUserInfo) {
+  const { data: res } = await axios.put(`users/${ id }`, userInfo)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+  ElMessage.success(res.meta.msg)
+}
+
+// 删除某用户
+export async function deleteUser(id: number) {
+  const { data: res } = await axios.delete(`users/${ id }`)
   return res
 }

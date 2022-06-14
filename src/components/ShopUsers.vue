@@ -1,10 +1,19 @@
 <!-- async 表名为异步组件 -->
 <script async setup lang="ts">
 
-  import { FormInstance, FormRules } from 'element-plus'
+  import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
   import { getUserList } from '../api'
-  import { postUser, PostUser, putUserState, QueryParam, User } from '../api/getUserList'
+  import {
+    deleteUser,
+    EditeUserInfo,
+    postUser,
+    PostUser,
+    putUserInfo,
+    putUserState,
+    QueryParam,
+    User
+  } from '../api/getUserList'
   import { checkEmail, checkMobile } from '../utils'
 
   interface QueryResponse {
@@ -69,6 +78,34 @@
     mobile: '',
     email: ''
   }) as Ref<PostUser>
+  // 修改用户信息 dialog 显示
+  const editeUserInfoDialogVisible = ref(false)
+  const editeUserInfoFormData = ref({
+    username: '',
+    mobile: '',
+    email: ''
+  }) as Ref<EditeUserInfo>
+  const editeUserInfoDialogFormRules = ref({
+    email: [{
+      required: true,
+      message: '请输入邮箱',
+      trigger: 'blur'
+    }, {
+      validator: checkEmail,
+      trigger: 'blur'
+    }],
+    mobile: [{
+      required: true,
+      message: '请输入手机号',
+      trigger: 'blur'
+    }, {
+      validator: checkMobile,
+      trigger: 'blur'
+    }]
+  }) as Ref<FormRules>
+  const editeUserInfoDialogFormRef = ref() as Ref<FormInstance>
+  // 当前操作的用户 ID
+  const currentUserID = ref() as Ref<number>
 
   // Vue3 中 create 生命周期为 setup
   // 在组件 create 时请求数据
@@ -113,10 +150,48 @@
         } catch (e) {
           return
         } finally {
-          addUserDialogVisible.value = false
+          addUserDialogVisible.value = !addUserDialogVisible.value
         }
       }
     })
+  }
+
+  function clickEditeUserInfoBtn(rowData: User) {
+    editeUserInfoFormData.value.username = rowData.username
+    editeUserInfoFormData.value.email = rowData.email
+    editeUserInfoFormData.value.mobile = rowData.mobile
+    currentUserID.value = rowData.id
+    editeUserInfoDialogVisible.value = !editeUserInfoDialogVisible.value
+  }
+
+  function closedEditeUserInfoDialog() {
+    editeUserInfoDialogFormRef.value.resetFields()
+  }
+
+  function editeUserInfoConfirm() {
+    editeUserInfoDialogFormRef.value.validate(async (validate) => {
+      if (validate) {
+        await putUserInfo(currentUserID.value, editeUserInfoFormData.value)
+        queryResponse.value = await getUserList(queryParam.value)
+        editeUserInfoDialogVisible.value = !editeUserInfoDialogVisible.value
+      }
+    })
+  }
+
+  // 删除用户
+  async function clickDeleteUserBtn(id: number) {
+    ElMessageBox.confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+      confirmButtonText: '确定',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+                .then(async () => {
+                  const res = await deleteUser(id)
+                  if (res.meta.status === 200) ElMessage.success(res.meta.msg)
+                  queryResponse.value = await getUserList(queryParam.value)
+                })
+                .catch(() => {
+                })
   }
 </script>
 
@@ -169,21 +244,25 @@
           </template>
         </el-table-column>
         <el-table-column label="操作">
-          <el-button size="small" type="primary">
-            <el-icon size="20">
-              <i-ri-edit-2-fill />
-            </el-icon>
-          </el-button>
-          <el-button size="small" type="danger">
-            <el-icon size="20">
-              <i-ic-sharp-delete-forever />
-            </el-icon>
-          </el-button>
-          <el-button size="small" type="warning">
-            <el-icon size="20">
-              <i-ic-round-settings />
-            </el-icon>
-          </el-button>
+          <template v-slot="scope">
+            <el-button size="small" type="primary" @click="clickEditeUserInfoBtn(scope.row)">
+              <el-icon size="20">
+                <i-ri-edit-2-fill />
+              </el-icon>
+            </el-button>
+            <el-button size="small" type="danger" @click="clickDeleteUserBtn(scope.row.id)">
+
+              <el-icon size="20">
+                <i-ic-sharp-delete-forever />
+              </el-icon>
+            </el-button>
+            <!-- fixme: 权限管理-->
+            <el-button size="small" type="warning">
+              <el-icon size="20">
+                <i-ic-round-settings />
+              </el-icon>
+            </el-button>
+          </template>
         </el-table-column>
       </el-table>
     </el-row>
@@ -209,7 +288,7 @@
              width="500px"
              @closed="addUserDialogClosed(addUserDialogFormRef)"
   >
-    <el-form ref="addUserDialogFormRef" :rules="addUserDialogFormRules" :model="addUserDialogFormData"
+    <el-form ref="addUserDialogFormRef" :model="addUserDialogFormData" :rules="addUserDialogFormRules"
              label-width="auto"
     >
       <el-form-item prop="username" label="用户名">
@@ -228,6 +307,31 @@
     <template #footer>
       <el-button @click="addUserDialogVisible=!addUserDialogVisible">取消</el-button>
       <el-button @click="addUser" type="primary">确定</el-button>
+    </template>
+  </el-dialog>
+
+  <!-- 修改用户信息 dialog -->
+  <el-dialog v-model="editeUserInfoDialogVisible"
+             title="修改用户信息"
+             width="500px"
+             @closed="closedEditeUserInfoDialog"
+  >
+    <el-form :model="editeUserInfoFormData" label-width="auto" :rules="editeUserInfoDialogFormRules"
+             ref="editeUserInfoDialogFormRef"
+    >
+      <el-form-item label="用户名">
+        <el-input v-model="editeUserInfoFormData.username" disabled />
+      </el-form-item>
+      <el-form-item prop="email" label="邮箱">
+        <el-input v-model="editeUserInfoFormData.email" />
+      </el-form-item>
+      <el-form-item prop="mobile" label="电话">
+        <el-input v-model="editeUserInfoFormData.mobile" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="editeUserInfoDialogVisible=!editeUserInfoDialogVisible">取消</el-button>
+      <el-button type="primary" @click="editeUserInfoConfirm">确定</el-button>
     </template>
   </el-dialog>
 </template>
