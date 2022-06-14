@@ -95,7 +95,7 @@
       ElMessage.success(asideMenusData.meta.msg)
       asideMenus.value = asideMenusData.data
     } catch (e) {
-      await router.push('login')
+      await router.push('/login')
     }
   })
 
