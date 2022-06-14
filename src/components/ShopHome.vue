@@ -23,11 +23,12 @@
         <el-button @click="isCollapse=!isCollapse" type="default" plain>|||</el-button>
         <el-menu :collapse="isCollapse"
                  :collapse-transition="false"
-                 @open="openAsideMenu"
-                 @close="closeAsideMenu"
-                 unique-opened
-                 text-color="#333744"
+                 active-text-color="#409EFF"
                  router
+                 text-color="#333744"
+                 unique-opened
+                 @close="closeAsideMenu"
+                 @open="openAsideMenu"
         >
           <el-sub-menu v-for="(asideMenu) in asideMenus"
                        :key="asideMenu.id"
