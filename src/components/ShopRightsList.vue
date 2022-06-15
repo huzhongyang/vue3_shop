@@ -11,8 +11,8 @@
   <!-- 导航 -->
   <el-breadcrumb separator="/">
     <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-    <el-breadcrumb-item>用户管理</el-breadcrumb-item>
-    <el-breadcrumb-item>用户列表</el-breadcrumb-item>
+    <el-breadcrumb-item>权限管理</el-breadcrumb-item>
+    <el-breadcrumb-item>权限列表</el-breadcrumb-item>
   </el-breadcrumb>
 
   <el-card style="margin-top: 20px">

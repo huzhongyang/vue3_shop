@@ -19,8 +19,28 @@ interface GetRightResponse {
   meta: Meta
 }
 
+export interface Role {
+  id: number,
+  roleName: string,
+  roleDesc: string,
+  children?: [SubRole]
+}
+
+type SubRole = {
+  id: number,
+  authName: string,
+  path: string,
+  children?: [SubRole]
+}
+
 export async function getRightsList(type: 'list' | 'tree') {
   const { data: res }: { data: GetRightResponse } = await axios.get(`rights/${ type }`)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
   return res.data
+}
+
+export async function getRolesList() {
+  const { data: res } = await axios.get('roles')
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+  return res.data as [Role]
 }
