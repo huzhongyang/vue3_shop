@@ -1,16 +1,21 @@
 <script setup lang="ts">
 
-  import { ElMessageBox, FormInstance, FormRules } from 'element-plus'
+  import { ElMessageBox, ElTree, FormInstance, FormRules } from 'element-plus'
+  import { TreeOptionProps } from 'element-plus/es/components/tree/src/tree.type'
   import { Ref } from 'vue'
   import {
     deleteRole,
     deleteRolePermission,
+    getRightsList,
     getRoleInfo,
     getRolesList,
+    postRights,
     postRole,
     putRoleInfo,
+    RightTree,
     Role,
-    RoleInfo
+    RoleInfo,
+    SubRole
   } from '../api/getRightsList'
 
   const rolesList = ref() as Ref<[Role]>
@@ -32,6 +37,16 @@
   // 点击 添加角色 or 修改角色 按钮
   const addOrEdite = ref() as Ref<'add' | 'edite'>
   const selectedRoleId = ref(0)
+
+  const assignPermissionDialogVisable = ref(false)
+  const assignPermissionData = ref() as Ref<[RightTree]>
+  const assignPermissionTreeProps = ref({
+    children: 'children',
+    label: 'authName'
+  }) as Ref<TreeOptionProps>
+  const selectedPermissionId = []
+  // InstanceType<typeof 组件名> 获取组件的实例类型
+  const assignPermissionDialogTreeRef = ref() as Ref<InstanceType<typeof ElTree>>
 
   function addOrEditeRole(type: 'add' | 'edite') {
     addOrEditeRoleDialogFormRef.value.validate(async (validate) => {
@@ -93,6 +108,36 @@
         return
       }
     }
+  }
+
+  // 打开角色分配权限 dialog
+  async function clickAssignPermissionBtn(role: Role) {
+    assignPermissionData.value = await getRightsList('tree') as [RightTree]
+    findPermissionId(role)
+    selectedRoleId.value = role.id
+    assignPermissionDialogVisable.value = !assignPermissionDialogVisable.value
+  }
+
+  // 找到当前角色的所有三级权限
+  function findPermissionId(node: Role | SubRole) {
+    if (!node.children) return selectedPermissionId.push(node.id)
+    node.children.forEach((e) => {
+      findPermissionId(e)
+    })
+  }
+
+  // 分配权限
+  async function assignPermission() {
+    const rightsId = [
+      ...assignPermissionDialogTreeRef.value.getCheckedKeys(),
+      ...assignPermissionDialogTreeRef.value.getHalfCheckedKeys()].join(',')
+    await postRights(selectedRoleId.value, rightsId)
+    assignPermissionDialogVisable.value = !assignPermissionDialogVisable
+    rolesList.value = await getRolesList()
+  }
+
+  function assignPermissionDialogClosed() {
+    selectedPermissionId.length = 0
   }
 
   // 第一次加载页面时 获取数据
@@ -176,7 +221,7 @@
                 <i-ic-sharp-delete-forever />
               </el-icon>
             </el-button>
-            <el-button size="small" type="warning">
+            <el-button size="small" type="warning" @click="clickAssignPermissionBtn(scope.row)">
               <el-icon size="20">
                 <i-ic-round-settings />
               </el-icon>
@@ -202,6 +247,21 @@
     <template #footer>
       <el-button @click="addOrEditeRoleDialogVisable=!addOrEditeRoleDialogVisable">取消</el-button>
       <el-button @click="addOrEditeRole(addOrEdite)" type="primary">确定</el-button>
+    </template>
+  </el-dialog>
+  <!-- 分配权限 dialog -->
+  <el-dialog v-model="assignPermissionDialogVisable" title="分配权限" width="500px" @closed="assignPermissionDialogClosed">
+    <el-tree :data="assignPermissionData"
+             show-checkbox
+             node-key="id"
+             :props="assignPermissionTreeProps"
+             :default-checked-keys="selectedPermissionId"
+             default-expand-all
+             ref="assignPermissionDialogTreeRef"
+    />
+    <template #footer>
+      <el-button @click="assignPermissionDialogVisable=!assignPermissionDialogVisable">取消</el-button>
+      <el-button @click="assignPermission" type="primary">确定</el-button>
     </template>
   </el-dialog>
 </template>

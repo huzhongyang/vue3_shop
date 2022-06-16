@@ -4,7 +4,7 @@
   import { getRightsList, Right } from '../api/getRightsList'
 
   const rightsList = ref() as Ref<[Right]>
-  rightsList.value = await getRightsList('list')
+  rightsList.value = await getRightsList('list') as [Right]
 </script>
 
 <template>

@@ -9,14 +9,12 @@ export interface Right {
   path: string
 }
 
-type Meta = {
-  msg: string,
-  status: number
-}
-
-interface GetRightResponse {
-  data: [Right],
-  meta: Meta
+export interface RightTree {
+  id: number,
+  authName: string,
+  path: null,
+  pid: number | string,
+  children?: [RightTree]
 }
 
 export interface Role {
@@ -28,7 +26,7 @@ export interface Role {
 
 export type RoleInfo = Pick<Role, 'roleName' | 'roleDesc'>
 
-type SubRole = {
+export type SubRole = {
   id: number,
   authName: string,
   path: string,
@@ -36,9 +34,14 @@ type SubRole = {
 }
 
 export async function getRightsList(type: 'list' | 'tree') {
-  const { data: res }: { data: GetRightResponse } = await axios.get(`rights/${ type }`)
+  const { data: res } = await axios.get(`rights/${ type }`)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
-  return res.data
+  switch (type) {
+    case 'list':
+      return res.data as [Right]
+    case 'tree':
+      return res.data as [RightTree]
+  }
 }
 
 export async function getRolesList() {
@@ -75,4 +78,11 @@ export async function deleteRolePermission(roleId: number, permissionId: number)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
   ElMessage.success(res.meta.msg)
   return res.data
+}
+
+// 为角色分配权限
+export async function postRights(roleId: number, rightsId: string) {
+  const { data: res } = await axios.post(`roles/${ roleId }/rights`, { rids: rightsId })
+  if (res.meta.status !== 200) return ElMessage.error(res.meta.msg)
+  ElMessage.success(res.meta.msg)
 }

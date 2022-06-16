@@ -28,6 +28,7 @@ declare module '@vue/runtime-core' {
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
     ElTag: typeof import('element-plus/es')['ElTag']
+    ElTree: typeof import('element-plus/es')['ElTree']
     IAntDesignShopTwotone: typeof import('~icons/ant-design/shop-twotone')['default']
     IBiShop: typeof import('~icons/bi/shop')['default']
     IIcOutlineShoppingBag: typeof import('~icons/ic/outline-shopping-bag')['default']
