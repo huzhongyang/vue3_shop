@@ -68,3 +68,11 @@ export async function deleteRole(id: number) {
   const { data: res } = await axios.delete(`roles/${ id }`)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
 }
+
+// 删除角色的某个三级权限
+export async function deleteRolePermission(roleId: number, permissionId: number) {
+  const { data: res } = await axios.delete(`roles/${ roleId }/rights/${ permissionId }`)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+  ElMessage.success(res.meta.msg)
+  return res.data
+}

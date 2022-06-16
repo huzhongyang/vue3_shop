@@ -2,7 +2,16 @@
 
   import { ElMessageBox, FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
-  import { deleteRole, getRoleInfo, getRolesList, postRole, putRoleInfo, Role, RoleInfo } from '../api/getRightsList'
+  import {
+    deleteRole,
+    deleteRolePermission,
+    getRoleInfo,
+    getRolesList,
+    postRole,
+    putRoleInfo,
+    Role,
+    RoleInfo
+  } from '../api/getRightsList'
 
   const rolesList = ref() as Ref<[Role]>
   const addOrEditeRoleDialogVisable = ref(false)
@@ -73,6 +82,19 @@
 
   }
 
+  // 删除角色的某个权限
+  async function deleteThreePermission(permissionId: number, roleId: number) {
+    const role = await deleteRolePermission(roleId, permissionId)
+    // 从数据中找到删除的权限, 将其删除, 从而 dom 刷新
+    const temp = toRefs(rolesList.value)
+    for (let roles of temp) {
+      if (roles.value.id === roleId) {
+        roles.value.children = role
+        return
+      }
+    }
+  }
+
   // 第一次加载页面时 获取数据
   rolesList.value = await getRolesList()
 </script>
@@ -91,7 +113,8 @@
     </el-row>
 
     <el-row style="margin-top: 20px">
-      <el-table :data="rolesList" border stripe>
+      <!-- 指定 row-key, 行数据更新时不折叠行 -->
+      <el-table :data="rolesList" border row-key="id" stripe>
         <el-table-column type="expand">
           <template #default="scope">
             <el-row v-for="(first,index) in scope.row.children" :key="first.id"
@@ -99,7 +122,9 @@
             >
               <!-- 一级权限 -->
               <el-col :span="5" class="col">
-                <el-tag>
+                <el-tag closable
+                        @close="deleteThreePermission(first.id,scope.row.id)"
+                >
                   {{ first.authName }}
                 </el-tag>
                 <el-icon>
@@ -113,14 +138,21 @@
                 >
                   <!-- 二级 -->
                   <el-col class="col" :span="5">
-                    <el-tag type="success">{{ item.authName }}</el-tag>
+                    <el-tag closable
+                            type="success"
+                            @close="deleteThreePermission(item.id,scope.row.id)"
+                    >{{ item.authName }}
+                    </el-tag>
                     <el-icon>
                       <i-ic-round-chevron-right />
                     </el-icon>
                   </el-col>
                   <!-- 三级 -->
                   <el-col :span="19">
-                    <el-tag v-for="(subItem) in item.children" :key="subItem.id" type="warning">
+                    <el-tag v-for="(subItem) in item.children" :key="subItem.id" closable
+                            type="warning"
+                            @close="deleteThreePermission(subItem.id,scope.row.id)"
+                    >
                       {{ subItem.authName }}
                     </el-tag>
                   </el-col>
