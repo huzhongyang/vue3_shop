@@ -1,8 +1,8 @@
 <script setup lang="ts">
 
-  import { FormInstance, FormRules } from 'element-plus'
+  import { ElMessageBox, FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
-  import { getRoleInfo, getRolesList, postRole, putRoleInfo, Role, RoleInfo } from '../api/getRightsList'
+  import { deleteRole, getRoleInfo, getRolesList, postRole, putRoleInfo, Role, RoleInfo } from '../api/getRightsList'
 
   const rolesList = ref() as Ref<[Role]>
   const addOrEditeRoleDialogVisable = ref(false)
@@ -56,6 +56,21 @@
   function clickAddRoleBtn() {
     addOrEdite.value = 'add'
     addOrEditeRoleDialogVisable.value = !addOrEditeRoleDialogVisable.value
+  }
+
+  function clickDeleteRoleBtn(roleId: number) {
+    ElMessageBox.confirm('是否删除该角色', '删除角色', {
+      confirmButtonText: '删除',
+      cancelButtonText: '取消',
+      type: 'warning'
+    })
+                .then(async () => {
+                  await deleteRole(roleId)
+                  rolesList.value = await getRolesList()
+                })
+                .catch(() => {
+                })
+
   }
 
   // 第一次加载页面时 获取数据
@@ -119,12 +134,12 @@
         <el-table-column prop="roleDesc" label="角色描述" />
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button @click="clickEditeRoleBtn(scope.row.id)" size="small" type="primary">
+            <el-button size="small" type="primary" @click="clickEditeRoleBtn(scope.row.id)">
               <el-icon size="20">
                 <i-ri-edit-2-fill />
               </el-icon>
             </el-button>
-            <el-button size="small" type="danger">
+            <el-button size="small" type="danger" @click="clickDeleteRoleBtn(scope.row.id)">
               <el-icon size="20">
                 <i-ic-sharp-delete-forever />
               </el-icon>

@@ -63,3 +63,8 @@ export async function putRoleInfo(id: number, roleInfo: RoleInfo) {
   const { data: res } = await axios.put(`roles/${ id }`, roleInfo)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
 }
+
+export async function deleteRole(id: number) {
+  const { data: res } = await axios.delete(`roles/${ id }`)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+}
