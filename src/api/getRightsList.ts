@@ -52,3 +52,14 @@ export async function postRole(roleInfo: RoleInfo) {
   if (res.meta.status !== 201) ElMessage.error(res.meta.msg)
   ElMessage.success(res.meta.msg)
 }
+
+export async function getRoleInfo(id: number) {
+  const { data: res } = await axios.get(`roles/${ id }`)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+  return res.data as RoleInfo
+}
+
+export async function putRoleInfo(id: number, roleInfo: RoleInfo) {
+  const { data: res } = await axios.put(`roles/${ id }`, roleInfo)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+}

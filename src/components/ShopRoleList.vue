@@ -2,16 +2,16 @@
 
   import { FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
-  import { getRolesList, postRole, Role, RoleInfo } from '../api/getRightsList'
+  import { getRoleInfo, getRolesList, postRole, putRoleInfo, Role, RoleInfo } from '../api/getRightsList'
 
   const rolesList = ref() as Ref<[Role]>
-  const addRoleDialogVisable = ref(false)
-  const addRoleDialogForm = ref({
+  const addOrEditeRoleDialogVisable = ref(false)
+  const addOrEditeRoleDialogForm = ref({
     roleName: '',
     roleDesc: ''
   }) as Ref<RoleInfo>
-  const addRoleDialogFormRef = ref() as Ref<FormInstance>
-  const addRoleDialogFormRules = ref({
+  const addOrEditeRoleDialogFormRef = ref() as Ref<FormInstance>
+  const addOrEditeRoleDialogFormRules = ref({
     roleName: [{
       required: true,
       message: '请输入角色名称'
@@ -20,23 +20,46 @@
       required: false
     }]
   }) as Ref<FormRules>
+  // 点击 添加角色 or 修改角色 按钮
+  const addOrEdite = ref() as Ref<'add' | 'edite'>
+  const selectedRoleId = ref(0)
 
-  // 第一次加载页面时 获取数据
-  rolesList.value = await getRolesList()
-
-  function addRole() {
-    addRoleDialogFormRef.value.validate(async (validate) => {
+  function addOrEditeRole(type: 'add' | 'edite') {
+    addOrEditeRoleDialogFormRef.value.validate(async (validate) => {
       if (validate) {
-        await postRole(addRoleDialogForm.value)
+        switch (type) {
+          case 'add':
+            await postRole(addOrEditeRoleDialogForm.value)
+            break
+          case 'edite':
+            await putRoleInfo(selectedRoleId.value, addOrEditeRoleDialogForm.value)
+            break
+        }
         rolesList.value = await getRolesList()
-        addRoleDialogVisable.value = !addRoleDialogVisable.value
+        addOrEditeRoleDialogVisable.value = !addOrEditeRoleDialogVisable.value
       }
     })
   }
 
-  function addRoleDialogClosed() {
-    addRoleDialogFormRef.value.resetFields()
+  function addOrEditeRoleDialogClosed() {
+    addOrEditeRoleDialogFormRef.value.resetFields()
   }
+
+  async function clickEditeRoleBtn(roleId: number) {
+    selectedRoleId.value = roleId
+    addOrEditeRoleDialogForm.value = await getRoleInfo(roleId)
+
+    addOrEdite.value = 'edite'
+    addOrEditeRoleDialogVisable.value = !addOrEditeRoleDialogVisable.value
+  }
+
+  function clickAddRoleBtn() {
+    addOrEdite.value = 'add'
+    addOrEditeRoleDialogVisable.value = !addOrEditeRoleDialogVisable.value
+  }
+
+  // 第一次加载页面时 获取数据
+  rolesList.value = await getRolesList()
 </script>
 
 <template>
@@ -49,12 +72,11 @@
 
   <el-card style="margin-top: 20px">
     <el-row>
-      <el-button type="primary" @click="addRoleDialogVisable=!addRoleDialogVisable">添加角色</el-button>
+      <el-button type="primary" @click="clickAddRoleBtn">添加角色</el-button>
     </el-row>
 
     <el-row style="margin-top: 20px">
       <el-table :data="rolesList" border stripe>
-
         <el-table-column type="expand">
           <template #default="scope">
             <el-row v-for="(first,index) in scope.row.children" :key="first.id"
@@ -97,7 +119,7 @@
         <el-table-column prop="roleDesc" label="角色描述" />
         <el-table-column label="操作">
           <template #default="scope">
-            <el-button size="small" type="primary">
+            <el-button @click="clickEditeRoleBtn(scope.row.id)" size="small" type="primary">
               <el-icon size="20">
                 <i-ri-edit-2-fill />
               </el-icon>
@@ -118,19 +140,21 @@
     </el-row>
   </el-card>
 
-  <!-- 添加角色 dialog -->
-  <el-dialog v-model="addRoleDialogVisable" title="添加角色" width="500px" @closed="addRoleDialogClosed">
-    <el-form ref="addRoleDialogFormRef" :model="addRoleDialogForm" :rules="addRoleDialogFormRules" label-width="auto">
+  <!-- 添加/修改 角色 dialog -->
+  <el-dialog v-model="addOrEditeRoleDialogVisable" title="添加角色" width="500px" @closed="addOrEditeRoleDialogClosed">
+    <el-form ref="addOrEditeRoleDialogFormRef" :model="addOrEditeRoleDialogForm" :rules="addOrEditeRoleDialogFormRules"
+             label-width="auto"
+    >
       <el-form-item label="角色名称" prop="roleName">
-        <el-input v-model="addRoleDialogForm.roleName" />
+        <el-input v-model="addOrEditeRoleDialogForm.roleName" />
       </el-form-item>
       <el-form-item label="角色描述" prop="roleDesc">
-        <el-input v-model="addRoleDialogForm.roleDesc" />
+        <el-input v-model="addOrEditeRoleDialogForm.roleDesc" />
       </el-form-item>
     </el-form>
     <template #footer>
-      <el-button @click="addRoleDialogVisable=!addRoleDialogVisable">取消</el-button>
-      <el-button @click="addRole" type="primary">确定</el-button>
+      <el-button @click="addOrEditeRoleDialogVisable=!addOrEditeRoleDialogVisable">取消</el-button>
+      <el-button @click="addOrEditeRole(addOrEdite)" type="primary">确定</el-button>
     </template>
   </el-dialog>
 </template>
