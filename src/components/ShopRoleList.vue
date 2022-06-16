@@ -1,10 +1,42 @@
 <script setup lang="ts">
 
+  import { FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
-  import { getRolesList, Role } from '../api/getRightsList'
+  import { getRolesList, postRole, Role, RoleInfo } from '../api/getRightsList'
 
   const rolesList = ref() as Ref<[Role]>
+  const addRoleDialogVisable = ref(false)
+  const addRoleDialogForm = ref({
+    roleName: '',
+    roleDesc: ''
+  }) as Ref<RoleInfo>
+  const addRoleDialogFormRef = ref() as Ref<FormInstance>
+  const addRoleDialogFormRules = ref({
+    roleName: [{
+      required: true,
+      message: '请输入角色名称'
+    }],
+    roleDesc: [{
+      required: false
+    }]
+  }) as Ref<FormRules>
+
+  // 第一次加载页面时 获取数据
   rolesList.value = await getRolesList()
+
+  function addRole() {
+    addRoleDialogFormRef.value.validate(async (validate) => {
+      if (validate) {
+        await postRole(addRoleDialogForm.value)
+        rolesList.value = await getRolesList()
+        addRoleDialogVisable.value = !addRoleDialogVisable.value
+      }
+    })
+  }
+
+  function addRoleDialogClosed() {
+    addRoleDialogFormRef.value.resetFields()
+  }
 </script>
 
 <template>
@@ -17,7 +49,7 @@
 
   <el-card style="margin-top: 20px">
     <el-row>
-      <el-button type="primary">添加角色</el-button>
+      <el-button type="primary" @click="addRoleDialogVisable=!addRoleDialogVisable">添加角色</el-button>
     </el-row>
 
     <el-row style="margin-top: 20px">
@@ -85,6 +117,22 @@
       </el-table>
     </el-row>
   </el-card>
+
+  <!-- 添加角色 dialog -->
+  <el-dialog v-model="addRoleDialogVisable" title="添加角色" width="500px" @closed="addRoleDialogClosed">
+    <el-form ref="addRoleDialogFormRef" :model="addRoleDialogForm" :rules="addRoleDialogFormRules" label-width="auto">
+      <el-form-item label="角色名称" prop="roleName">
+        <el-input v-model="addRoleDialogForm.roleName" />
+      </el-form-item>
+      <el-form-item label="角色描述" prop="roleDesc">
+        <el-input v-model="addRoleDialogForm.roleDesc" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="addRoleDialogVisable=!addRoleDialogVisable">取消</el-button>
+      <el-button @click="addRole" type="primary">确定</el-button>
+    </template>
+  </el-dialog>
 </template>
 
 <style scoped>

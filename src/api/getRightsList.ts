@@ -26,6 +26,8 @@ export interface Role {
   children?: [SubRole]
 }
 
+export type RoleInfo = Pick<Role, 'roleName' | 'roleDesc'>
+
 type SubRole = {
   id: number,
   authName: string,
@@ -43,4 +45,10 @@ export async function getRolesList() {
   const { data: res } = await axios.get('roles')
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
   return res.data as [Role]
+}
+
+export async function postRole(roleInfo: RoleInfo) {
+  const { data: res } = await axios.post('roles', roleInfo)
+  if (res.meta.status !== 201) ElMessage.error(res.meta.msg)
+  ElMessage.success(res.meta.msg)
 }
