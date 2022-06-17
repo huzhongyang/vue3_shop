@@ -77,3 +77,10 @@ export async function deleteUser(id: number) {
   const { data: res } = await axios.delete(`users/${ id }`)
   return res
 }
+
+// 分配角色
+export async function putRole(userId: number, roleId: string) {
+  const { data: res } = await axios.put(`users/${ userId }/role`, { rid: roleId })
+  if (res.meta.status !== 200) return ElMessage.error(res.meta.msg)
+  ElMessage.success(res.meta.msg)
+}

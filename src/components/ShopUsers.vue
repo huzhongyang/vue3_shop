@@ -4,11 +4,13 @@
   import { ElMessage, ElMessageBox, FormInstance, FormRules } from 'element-plus'
   import { Ref } from 'vue'
   import { getUserList } from '../api'
+  import { getRolesList, Role } from '../api/getRightsList'
   import {
     deleteUser,
     EditeUserInfo,
     postUser,
     PostUser,
+    putRole,
     putUserInfo,
     putUserState,
     QueryParam,
@@ -106,6 +108,16 @@
   const editeUserInfoDialogFormRef = ref() as Ref<FormInstance>
   // 当前操作的用户 ID
   const currentUserID = ref() as Ref<number>
+  // 分配角色 dialog
+  const assignRoleDialogVisable = ref(false)
+  const assignRoleDialogData = ref({}) as Ref<{
+    userId: number,
+    userName: string,
+    roleName: string,
+    roleList: [Role]
+  }>
+  // 选择的新角色 roleId
+  let selectedRole = ref() as Ref<string>
 
   // Vue3 中 create 生命周期为 setup
   // 在组件 create 时请求数据
@@ -193,6 +205,25 @@
                 .catch(() => {
                 })
   }
+
+  async function clickAssginRoleBtn(roleData: any) {
+    assignRoleDialogData.value.userName = roleData.username
+    assignRoleDialogData.value.userId = roleData.id
+    assignRoleDialogData.value.roleName = roleData.role_name
+    assignRoleDialogData.value.roleList = await getRolesList()
+    assignRoleDialogVisable.value = !assignRoleDialogVisable.value
+  }
+
+  // 分配角色
+  async function assignRole(userId: number, roleId: string) {
+    await putRole(userId, roleId)
+    queryResponse.value = await getUserList(queryParam.value)
+    assignRoleDialogVisable.value = !assignRoleDialogVisable.value
+  }
+
+  function assignRoleDialogClosed() {
+    selectedRole.value = ''
+  }
 </script>
 
 <template>
@@ -251,13 +282,11 @@
               </el-icon>
             </el-button>
             <el-button size="small" type="danger" @click="clickDeleteUserBtn(scope.row.id)">
-
               <el-icon size="20">
                 <i-ic-sharp-delete-forever />
               </el-icon>
             </el-button>
-            <!-- fixme: 权限管理-->
-            <el-button size="small" type="warning">
+            <el-button size="small" type="warning" @click="clickAssginRoleBtn(scope.row)">
               <el-icon size="20">
                 <i-ic-round-settings />
               </el-icon>
@@ -332,6 +361,25 @@
     <template #footer>
       <el-button @click="editeUserInfoDialogVisible=!editeUserInfoDialogVisible">取消</el-button>
       <el-button type="primary" @click="editeUserInfoConfirm">确定</el-button>
+    </template>
+  </el-dialog>
+  <!-- 分配角色 dialog -->
+  <el-dialog v-model="assignRoleDialogVisable" title="分配角色" width="500px" @closed="assignRoleDialogClosed">
+    <div style="margin-bottom: 10px">当前用户: <span>{{ assignRoleDialogData.userName }}</span><br></div>
+    <div style="margin-bottom: 10px">当前角色: <span>{{ assignRoleDialogData.roleName }}</span><br></div>
+    <div style="margin-bottom: 10px"> 分配角色:
+      <el-select v-model="selectedRole" placeholder="请选择">
+        <el-option v-for="role in assignRoleDialogData.roleList"
+                   :key="role.id"
+                   :label="role.roleName"
+                   :value="role.id"
+        />
+      </el-select>
+    </div>
+
+    <template #footer>
+      <el-button @click="assignRoleDialogVisable=!assignRoleDialogVisable">取消</el-button>
+      <el-button type="primary" @click="assignRole(assignRoleDialogData.userId,selectedRole)">确定</el-button>
     </template>
   </el-dialog>
 </template>
