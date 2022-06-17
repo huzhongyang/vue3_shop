@@ -251,13 +251,13 @@
   </el-dialog>
   <!-- 分配权限 dialog -->
   <el-dialog v-model="assignPermissionDialogVisable" title="分配权限" width="500px" @closed="assignPermissionDialogClosed">
-    <el-tree :data="assignPermissionData"
-             show-checkbox
-             node-key="id"
-             :props="assignPermissionTreeProps"
+    <el-tree ref="assignPermissionDialogTreeRef"
+             :data="assignPermissionData"
              :default-checked-keys="selectedPermissionId"
+             :props="assignPermissionTreeProps"
              default-expand-all
-             ref="assignPermissionDialogTreeRef"
+             node-key="id"
+             show-checkbox
     />
     <template #footer>
       <el-button @click="assignPermissionDialogVisable=!assignPermissionDialogVisable">取消</el-button>
