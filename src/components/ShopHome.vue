@@ -20,7 +20,8 @@
 
       <!-- aside -->
       <el-aside :width="!isCollapse?'170px':'64px'">
-        <el-button @click="isCollapse=!isCollapse" type="default" plain>|||</el-button>
+        <el-button @click="isCollapse=!isCollapse" type="default" plain :class="isCollapse?'collapse':'no-collapse'">|||
+        </el-button>
         <el-menu :collapse="isCollapse"
                  :collapse-transition="false"
                  active-text-color="#409EFF"
@@ -142,13 +143,14 @@
     right: 20px;
   }
 
-  .el-aside .el-button {
-    width: 170px;
+  .no-collapse {
+    width: 100%;
     border-radius: 0;
   }
 
   .collapse {
     width: 64px;
+    border-radius: 0;
   }
 
   .el-menu {

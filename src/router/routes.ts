@@ -3,6 +3,8 @@ import { RouteRecordRaw } from 'vue-router'
 import LogIn from '../components/LogIn.vue'
 import ShopHome from '../components/ShopHome.vue'
 import ShopHomeMain from '../components/ShopHomeMain.vue'
+import ShopRightsList from '../components/ShopRightsList.vue'
+import ShopRoleList from '../components/ShopRoleList.vue'
 import ShopUsers from '../components/ShopUsers.vue'
 
 // 路由数组
@@ -27,6 +29,14 @@ const routes: Array<RouteRecordRaw> = [{
     path: 'welcome',
     name: 'welcome',
     component: ShopHomeMain
+  }, {
+    path: 'rights',
+    name: 'rights',
+    component: ShopRightsList
+  }, {
+    path: 'roles',
+    name: 'roles',
+    component: ShopRoleList
   }]
 }]
 
