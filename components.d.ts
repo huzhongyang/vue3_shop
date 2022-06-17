@@ -29,9 +29,11 @@ declare module '@vue/runtime-core' {
     ElSwitch: typeof import('element-plus/es')['ElSwitch']
     ElTable: typeof import('element-plus/es')['ElTable']
     ElTableColumn: typeof import('element-plus/es')['ElTableColumn']
+    ElTag: typeof import('element-plus/es')['ElTag']
     IAntDesignShopTwotone: typeof import('~icons/ant-design/shop-twotone')['default']
     IBiShop: typeof import('~icons/bi/shop')['default']
     IIcOutlineShoppingBag: typeof import('~icons/ic/outline-shopping-bag')['default']
+    IIcRoundChevronRight: typeof import('~icons/ic/round-chevron-right')['default']
     IIcRoundSettings: typeof import('~icons/ic/round-settings')['default']
     IIcSharpDeleteForever: typeof import('~icons/ic/sharp-delete-forever')['default']
     IIonSearch: typeof import('~icons/ion/search')['default']
@@ -43,6 +45,7 @@ declare module '@vue/runtime-core' {
     RouterView: typeof import('vue-router')['RouterView']
     ShopHome: typeof import('./src/components/ShopHome.vue')['default']
     ShopHomeMain: typeof import('./src/components/ShopHomeMain.vue')['default']
+    ShopRoleList: typeof import('./src/components/ShopRoleList.vue')['default']
     ShopUsers: typeof import('./src/components/ShopUsers.vue')['default']
   }
 }
