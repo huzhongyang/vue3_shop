@@ -1,6 +1,7 @@
 // routes.ts 主要用于集中管理路由
 import { RouteRecordRaw } from 'vue-router'
 import LogIn from '../components/LogIn.vue'
+import ShopGoodsCate from "../components/ShopGoodsCate.vue";
 import ShopHome from '../components/ShopHome.vue'
 import ShopHomeMain from '../components/ShopHomeMain.vue'
 import ShopRightsList from '../components/ShopRightsList.vue'
@@ -37,6 +38,10 @@ const routes: Array<RouteRecordRaw> = [{
     path: 'roles',
     name: 'roles',
     component: ShopRoleList
+  }, {
+    path: 'categories',
+    name: 'categories',
+    component: ShopGoodsCate
   }]
 }]
 
