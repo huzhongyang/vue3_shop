@@ -8,6 +8,7 @@
     getGoodsCategoryList,
     Goods,
     postCategory,
+    putCategory,
     QueryParam
   } from '../api/goodsControl'
 
@@ -33,6 +34,19 @@
   const cascaderSelectedData = ref([])
   const addCategoryDialogFormRules = ref({
     cat_name: [{
+      required: true,
+      message: '请输入分类名称',
+      trigger: 'blur'
+    }]
+  }) as Ref<FormRules>
+  const editCategoryDialogVisable = ref(false)
+  const editCategoryData = ref({
+    cate_id: 0,
+    cate_name: ''
+  })
+  const editCategoryFormRef = ref() as Ref<InstanceType<typeof ElForm>>
+  const editCategoryFormRules = ref({
+    cate_name: [{
       required: true,
       message: '请输入分类名称',
       trigger: 'blur'
@@ -78,6 +92,22 @@
 
   function addCategoryDialogClosed() {
     addCategoryDialogFormRef.value.resetFields()
+  }
+
+  function editeCategoryBtn(cate_id: number, cate_name: string) {
+    editCategoryData.value.cate_id = cate_id
+    editCategoryData.value.cate_name = cate_name
+    editCategoryDialogVisable.value = !editCategoryDialogVisable.value
+  }
+
+  function editCategory() {
+    editCategoryFormRef.value.validate(async (validate) => {
+      if (validate) {
+        await putCategory(editCategoryData.value.cate_id, editCategoryData.value.cate_name)
+        goodsCategoryList.value = await getGoodsCategoryList(queryParam.value) as GetGoodsCategoryList
+        editCategoryDialogVisable.value = !editCategoryDialogVisable.value
+      }
+    })
   }
 
   async function deleteCategoryBtn(categoryId: number) {
@@ -147,7 +177,7 @@
         </el-table-column>
         <el-table-column label="操作">
           <template v-slot="scope">
-            <el-button size="small" type="primary">
+            <el-button size="small" type="primary" @click="editeCategoryBtn(scope.row.cat_id,scope.row.cat_name)">
               <el-icon size="20">
                 <i-ri-edit-2-fill />
               </el-icon>
@@ -205,6 +235,19 @@
     <template #footer>
       <el-button @click="addCategoryDialogVisable=!addCategoryDialogVisable">取消</el-button>
       <el-button type="primary" @click="addCategory">确定</el-button>
+    </template>
+  </el-dialog>
+
+  <!-- 修改分类 dialog -->
+  <el-dialog v-model="editCategoryDialogVisable" title="添加分类" width="500px">
+    <el-form :model="editCategoryData" ref="editCategoryFormRef" :rules="editCategoryFormRules" label-width="auto">
+      <el-form-item prop="cate_name" label="分类名称">
+        <el-input v-model="editCategoryData.cate_name" />
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <el-button @click="editCategoryDialogVisable=!editCategoryDialogVisable">取消</el-button>
+      <el-button type="primary" @click="editCategory">确定</el-button>
     </template>
   </el-dialog>
 </template>

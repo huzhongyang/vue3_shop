@@ -59,3 +59,12 @@ export async function deleteCategory(categoryId: number) {
     ElMessage.success(res.meta.msg)
   }
 }
+
+export async function putCategory(categoryId: number, categoryName: string) {
+  const { data: res } = await axios.put(`categories/${ categoryId }`, { cat_name: categoryName })
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
