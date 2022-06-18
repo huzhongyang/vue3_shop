@@ -1,8 +1,9 @@
 <script setup lang="ts">
-  import { CascaderProps, ElForm, FormRules } from 'element-plus'
+  import { CascaderProps, ElForm, ElMessageBox, FormRules } from 'element-plus'
   import { Ref } from 'vue'
   import {
     AddGoodsCategoryParam,
+    deleteCategory,
     GetGoodsCategoryList,
     getGoodsCategoryList,
     Goods,
@@ -79,6 +80,19 @@
     addCategoryDialogFormRef.value.resetFields()
   }
 
+  async function deleteCategoryBtn(categoryId: number) {
+    try {
+      await ElMessageBox.confirm('确认删除该分类', '删除分类', {
+        cancelButtonText: '取消',
+        confirmButtonText: '确认',
+        type: 'warning'
+      })
+      await deleteCategory(categoryId)
+      goodsCategoryList.value = await getGoodsCategoryList(queryParam.value) as GetGoodsCategoryList
+    } catch (e) {
+    }
+  }
+
   // X 条/页 改变时
   async function handleSizeChange(size: number) {
     queryParam.value.pagesize = size
@@ -139,7 +153,7 @@
               </el-icon>
               编辑
             </el-button>
-            <el-button size="small" type="danger">
+            <el-button size="small" type="danger" @click="deleteCategoryBtn(scope.row.cat_id)">
               <el-icon size="20">
                 <i-ic-sharp-delete-forever />
               </el-icon>

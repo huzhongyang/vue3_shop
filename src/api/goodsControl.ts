@@ -50,3 +50,12 @@ export async function postCategory(param: AddGoodsCategoryParam) {
     ElMessage.success(res.meta.msg)
   }
 }
+
+export async function deleteCategory(categoryId: number) {
+  const { data: res } = await axios.delete(`categories/${ categoryId }`)
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
