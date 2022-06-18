@@ -68,3 +68,28 @@ export async function putCategory(categoryId: number, categoryName: string) {
     ElMessage.success(res.meta.msg)
   }
 }
+
+export interface CategoryAttribute {
+  // 分类参数 ID
+  attr_id: number,
+  // 分类参数名称
+  attr_name: string,
+  // 分类参数所属分类
+  cat_id: number,
+  // only:输入框(唯一) many:后台下拉列表/前台单选框
+  attr_sel: 'only' | 'many',
+  // manual:手工录入 list:从列表选择
+  attr_write: 'manual' | 'list',
+  // 如果 attr_write:list,那么有值，该值以逗号分隔
+  attr_vals?: string
+}
+
+export async function getCategoryAttributes(categoryId: number, type: 'only' | 'many') {
+  const { data: res } = await axios.get(`categories/${ categoryId }/attributes`, { params: { sel: type } })
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+  return res.data as [CategoryAttribute]
+}
