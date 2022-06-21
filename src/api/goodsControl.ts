@@ -93,3 +93,28 @@ export async function getCategoryAttributes(categoryId: number, type: 'only' | '
   }
   return res.data as [CategoryAttribute]
 }
+
+export type AttributeData = Omit<CategoryAttribute, 'attr_id' | 'attr_write'>
+
+export async function postCategoryAttribute(attr: AttributeData) {
+  const { data: res } = await axios.post(`categories/${ attr.cat_id }/attributes`, attr)
+  if (res.meta.status !== 201) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
+
+export async function deleteAttribute(categoryId: number, attributeId: number) {
+  const { data: res } = await axios.delete(`categories/${ categoryId }/attributes/${ attributeId }`)
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
+
+export async function putParam(attr: AttributeData, attrId: number) {
+  const { data: res } = await axios.put(`categories/${ attr.cat_id }/attributes/${ attrId }`, attr)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+}
