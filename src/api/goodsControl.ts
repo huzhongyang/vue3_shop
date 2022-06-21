@@ -94,7 +94,7 @@ export async function getCategoryAttributes(categoryId: number, type: 'only' | '
   return res.data as [CategoryAttribute]
 }
 
-export type AttributeData = Omit<CategoryAttribute, 'attr_id' | 'attr_write'>
+export type AttributeData = Omit<CategoryAttribute, 'attr_write'>
 
 export async function postCategoryAttribute(attr: AttributeData) {
   const { data: res } = await axios.post(`categories/${ attr.cat_id }/attributes`, attr)
@@ -117,4 +117,10 @@ export async function deleteAttribute(categoryId: number, attributeId: number) {
 export async function putParam(attr: AttributeData, attrId: number) {
   const { data: res } = await axios.put(`categories/${ attr.cat_id }/attributes/${ attrId }`, attr)
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+}
+
+export interface ExpandRowData {
+  tagInputVisable: boolean,
+  tagInputData: string,
+  data: AttributeData
 }

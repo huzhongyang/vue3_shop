@@ -1,10 +1,12 @@
 <script setup lang="ts">
 
-  import { CascaderProps, ElForm, ElMessageBox, ExpandTrigger, FormRules } from 'element-plus'
+  import { CascaderProps, ElForm, ElInput, ElMessageBox, ExpandTrigger, FormRules } from 'element-plus'
   import { ref, Ref } from 'vue'
   import {
+    AttributeData,
     CategoryAttribute,
     deleteAttribute,
+    ExpandRowData,
     getCategoryAttributes,
     getGoodsCategoryList,
     Goods,
@@ -44,9 +46,13 @@
     attr_name: '',
     attr_sel: 'many',
     attr_vals: ''
-  }) as Ref<Pick<CategoryAttribute, 'cat_id' | 'attr_name' | 'attr_sel' | 'attr_vals'>>
+  }) as Ref<Pick<CategoryAttribute, 'cat_id' | 'attr_name' | 'attr_sel' | 'attr_vals' | 'attr_id'>>
   const editParamDialogVisable = ref(false)
   const selectedAttrId = ref(0)
+  // const tagInputVisable = ref(false)
+  // const tagInputData = ref('')
+  const tagInputRef = ref() as Ref<InstanceType<typeof ElInput>>
+  const expandRowData = ref() as Ref<ExpandRowData>
 
   async function selectedCategoryChange() {
     attributeData.value = await getCategoryAttributes(selectedCategory.value, activeTab.value)
@@ -108,6 +114,29 @@
     })
   }
 
+  async function addTagBtn() {
+    expandRowData.value.tagInputVisable = !expandRowData.value.tagInputVisable
+    await nextTick()
+    tagInputRef.value.input!.focus()
+  }
+
+  async function handleTagInputConfirm(data: AttributeData) {
+    if (expandRowData.value.tagInputData !== '') {
+      expandRowData.value.data.attr_vals += ',' + expandRowData.value.tagInputData.trim()
+      await putParam(expandRowData.value.data, data.attr_id)
+      expandRowData.value.tagInputData = ''
+    }
+    expandRowData.value.tagInputVisable = !expandRowData.value.tagInputVisable
+  }
+
+  function handleExpandChage(rowData: AttributeData) {
+    expandRowData.value = {
+      tagInputVisable: false,
+      tagInputData: '',
+      data: rowData
+    }
+  }
+
   goodsCategoryCascaderData.value = await getGoodsCategoryList() as [Goods]
 </script>
 
@@ -130,7 +159,6 @@
                      :props="goodsCategoryCascaderProps"
                      clearable
                      @change="selectedCategoryChange"
-
         />
       </el-form-item>
     </el-row>
@@ -142,9 +170,31 @@
         <el-tab-pane label="动态参数" name="many">
           <el-button type="primary" @click="clickAddParamBtn">添加参数</el-button>
           <el-row style="margin-top: 10px">
-            <el-table :data="attributeData" border stripe>
+            <el-table :data="attributeData" border lazy stripe @expand-change="handleExpandChage">
               <el-table-column type="expand">
-
+                <template #default="scope">
+                  <el-tag v-if="scope.row.attr_vals!==''"
+                          v-for="(tagName, index) in scope.row.attr_vals.split(',')"
+                          :key="index"
+                          style="margin: 0 5px 5px 5px;"
+                          closable
+                  >
+                    {{ tagName }}
+                  </el-tag>
+                  <!-- fixme: 每行 input 框状态没有区分, tag 删除没做 -->
+                  <el-input v-if="expandRowData.tagInputVisable"
+                            ref="tagInputRef"
+                            v-model="expandRowData.tagInputData"
+                            @keyup.enter="handleTagInputConfirm(scope.row)"
+                            @blur="handleTagInputConfirm(scope.row)"
+                            autofocus
+                            size="small"
+                            style="display: inline;"
+                  />
+                  <el-button v-else size="small" @click="addTagBtn">
+                    + New Tag
+                  </el-button>
+                </template>
               </el-table-column>
               <el-table-column type="index" label="#"></el-table-column>
               <el-table-column prop="attr_name" label="参数名称"></el-table-column>
