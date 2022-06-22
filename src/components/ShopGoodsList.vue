@@ -1,6 +1,7 @@
 <script setup lang="ts">
   import { Ref } from 'vue'
   import { getGoodList, GodListResponseData, GoodListQueryParam } from '../api/goodsControl'
+  import router from '../router'
 
   const queryParam = ref({
     query: '',
@@ -8,6 +9,10 @@
     pagesize: 5
   }) as Ref<GoodListQueryParam>
   const getGoodListResponse = ref() as Ref<GodListResponseData>
+
+  function addGoodsBtn() {
+    router.push('goods/add')
+  }
 
   // fixme: 防抖
   async function queryInputChange() {
@@ -55,7 +60,7 @@
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary">添加商品</el-button>
+        <el-button type="primary" @click="addGoodsBtn">添加商品</el-button>
       </el-col>
     </el-row>
 
