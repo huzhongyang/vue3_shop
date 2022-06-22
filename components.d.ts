@@ -50,6 +50,7 @@ declare module '@vue/runtime-core' {
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     ShopGoodsCate: typeof import('./src/components/ShopGoodsCate.vue')['default']
+    ShopGoodsParam: typeof import('./src/components/ShopGoodsParam.vue')['default']
     ShopHome: typeof import('./src/components/ShopHome.vue')['default']
     ShopHomeMain: typeof import('./src/components/ShopHomeMain.vue')['default']
     ShopRightsList: typeof import('./src/components/ShopRightsList.vue')['default']

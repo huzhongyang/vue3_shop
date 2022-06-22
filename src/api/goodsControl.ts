@@ -68,3 +68,59 @@ export async function putCategory(categoryId: number, categoryName: string) {
     ElMessage.success(res.meta.msg)
   }
 }
+
+export interface CategoryAttribute {
+  // 分类参数 ID
+  attr_id: number,
+  // 分类参数名称
+  attr_name: string,
+  // 分类参数所属分类
+  cat_id: number,
+  // only:输入框(唯一) many:后台下拉列表/前台单选框
+  attr_sel: 'only' | 'many',
+  // manual:手工录入 list:从列表选择
+  attr_write: 'manual' | 'list',
+  // 如果 attr_write:list,那么有值，该值以逗号分隔
+  attr_vals?: string
+}
+
+export async function getCategoryAttributes(categoryId: number, type: 'only' | 'many') {
+  const { data: res } = await axios.get(`categories/${ categoryId }/attributes`, { params: { sel: type } })
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+  return res.data as [CategoryAttribute]
+}
+
+export type AttributeData = Omit<CategoryAttribute, 'attr_write'>
+
+export async function postCategoryAttribute(attr: AttributeData) {
+  const { data: res } = await axios.post(`categories/${ attr.cat_id }/attributes`, attr)
+  if (res.meta.status !== 201) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
+
+export async function deleteAttribute(categoryId: number, attributeId: number) {
+  const { data: res } = await axios.delete(`categories/${ categoryId }/attributes/${ attributeId }`)
+  if (res.meta.status !== 200) {
+    ElMessage.error(res.meta.msg)
+  } else {
+    ElMessage.success(res.meta.msg)
+  }
+}
+
+export async function putParam(attr: AttributeData, attrId: number) {
+  const { data: res } = await axios.put(`categories/${ attr.cat_id }/attributes/${ attrId }`, attr)
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+}
+
+export interface ExpandRowData {
+  tagInputVisable: boolean,
+  tagInputData: string,
+  data: AttributeData
+}

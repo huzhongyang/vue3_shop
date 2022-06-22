@@ -8,3 +8,13 @@ body,
     margin: 0;
     min-width: 930px;
 }
+
+/* 商品分类/分类参数 el-alert 文字居中 */
+.el-alert__title {
+    line-height: 22.5px !important;
+}
+
+/* el-cascader */
+.el-tooltip__trigger {
+    width: 230px;
+}
