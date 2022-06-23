@@ -149,11 +149,17 @@ export interface Good {
   hot_number: number,
   is_promote: boolean,
   goods_cat: string,
-  pics?: { pic: string } []
+  pics?: { pic: string } [],
+  goods_introduce?: string
 }
 
 export async function getGoodList(queryParam: GoodListQueryParam) {
   const { data: res } = await axios.get('goods', { params: queryParam })
   if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
   return res.data as GodListResponseData
+}
+
+export async function postGoods(goods: Good) {
+  const { data: res } = await axios.post('goods', goods)
+  return res
 }

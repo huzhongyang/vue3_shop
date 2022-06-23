@@ -1,8 +1,17 @@
 <script setup lang="ts">
 
+  import Editor from '@tinymce/tinymce-vue'
   import { CascaderProps, ElForm, ElMessage, ExpandTrigger, FormRules, UploadFile } from 'element-plus'
   import { Ref } from 'vue'
-  import { CategoryAttribute, getCategoryAttributes, getGoodsCategoryList, Good, Goods } from '../api/goodsControl'
+  import {
+    CategoryAttribute,
+    getCategoryAttributes,
+    getGoodsCategoryList,
+    Good,
+    Goods,
+    postGoods
+  } from '../api/goodsControl'
+  import router from '../router'
 
   // 当前活动的标签/进度
   const stepActive = ref('0') as Ref<string>
@@ -15,7 +24,8 @@
     goods_state: null,
     add_time: '',
     goods_cat: '',
-    pics: []
+    pics: [],
+    goods_introduce: ''
   }) as unknown as Ref<Good>
   const goodsFormRef = ref() as Ref<InstanceType<typeof ElForm>>
   const goodsFormRules = ref({
@@ -98,7 +108,6 @@
     const res = uploadFile.response as { data: { tmp_path: string }, meta: object }
     previewURL.value = `http://45.32.250.233:8888/${ res.data.tmp_path }`
     previewPictureDialogVisable.value = !previewPictureDialogVisable.value
-    console.log(previewURL)
   }
 
   // 图片移除
@@ -121,6 +130,16 @@
     console.log(error)
   }
 
+  async function addGoods() {
+    const res = await postGoods(goodsData.value)
+    if (res.meta.status !== 201) {
+      ElMessage.error(res.meta.msg)
+    } else {
+      ElMessage.success(res.meta.msg)
+      await router.push('/home/goods')
+    }
+  }
+
   goodsCategoryData.value = await getGoodsCategoryList({}) as [Goods]
 </script>
 
@@ -135,7 +154,7 @@
   <el-card style="margin-top: 10px">
     <el-alert :closable="false" center show-icon title="添加商品信息" type="info" />
     <!-- 进度条 -->
-    <el-row style="margin: 15px 0">
+    <el-row class="row" style="margin: 15px 0">
       <el-steps :active="stepActive-0" align-center style="width: 100%">
         <el-step title="基本信息" />
         <el-step title="商品参数" />
@@ -197,7 +216,14 @@
               </template>
             </el-upload>
           </el-tab-pane>
-          <el-tab-pane label="商品内容" name="4">Task</el-tab-pane>
+          <el-tab-pane label="商品内容" name="4">
+            <!-- 富文本编辑器 -->
+            <editor v-model="goodsData.goods_introduce"
+                    api-key="ak1uwuzfagc4lmyph7l6b8gcs5muhiluns8za0eizpctj1sj"
+            />
+            <!-- 添加商品按钮 -->
+            <el-button style="margin-top: 10px" type="primary" @click="addGoods">添加商品</el-button>
+          </el-tab-pane>
         </el-tabs>
       </el-form>
     </el-row>
@@ -216,5 +242,4 @@
   .el-form {
     width: 100%;
   }
-
 </style>

@@ -2,6 +2,7 @@ lockfileVersion: 5.4
 
 specifiers:
   '@iconify/json': ^2.1.54
+  '@tinymce/tinymce-vue': ^4
   '@typescript-eslint/eslint-plugin': ^5.27.0
   '@typescript-eslint/parser': ^5.27.0
   '@vitejs/plugin-vue': ^2.3.3
@@ -30,6 +31,7 @@ specifiers:
   vue-tsc: ^0.34.17
 
 dependencies:
+  '@tinymce/tinymce-vue': 4.0.7_vue@3.2.37
   axios: 0.27.2
   element-plus: 2.2.2_vue@3.2.37
   eslint-plugin-prettier: 4.0.0_j7rsahgqtkecno6yauhsgsglf4
@@ -198,6 +200,15 @@ packages:
 
   /@sxzz/popperjs-es/2.11.7:
     resolution: {integrity: sha512-Ccy0NlLkzr0Ex2FKvh2X+OyERHXJ88XJ1MXtsI9y9fGexlaXaVTPzBCRBwIxFkORuOb+uBqeu+RqnpgYTEZRUQ==}
+    dev: false
+
+  /@tinymce/tinymce-vue/4.0.7_vue@3.2.37:
+    resolution: {integrity: sha512-1esB8wGWrjPCY+rK8vy3QB1cxwXo7HLJWuNrcyPl6LOVR+QJjub0OiV/C+TUEsLN6OpCtRv+QnIqMC5vXz783Q==}
+    peerDependencies:
+      vue: ^3.0.0
+    dependencies:
+      tinymce: 5.10.5
+      vue: 3.2.37
     dev: false
 
   /@types/json-schema/7.0.11:
@@ -2399,6 +2410,10 @@ packages:
 
   /text-table/0.2.0:
     resolution: {integrity: sha1-f17oI66AUgfACvLfSoTsP8+lcLQ=}
+
+  /tinymce/5.10.5:
+    resolution: {integrity: sha512-nFKtLhmoRtExBxUfv06JlkbQWux5D+d115vxSRAqUmccZdrtpFvOIYwZmikvulLdM9pfEpvO0B+RQ2qFV/+R7w==}
+    dev: false
 
   /to-fast-properties/2.0.0:
     resolution: {integrity: sha1-3F5pjL0HkmW8c+A3doGk5Og/YW4=}

@@ -9,6 +9,7 @@
     "lint": "eslint src --fix --ext .ts,.tsx,.vue,.js,.jsx"
   },
   "dependencies": {
+    "@tinymce/tinymce-vue": "^4",
     "axios": "^0.27.2",
     "element-plus": "^2.2.2",
     "eslint-plugin-prettier": "^4.0.0",
