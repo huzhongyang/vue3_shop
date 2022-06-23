@@ -1,6 +1,7 @@
 <script setup lang="ts">
+  import { ElMessage, ElMessageBox } from 'element-plus'
   import { Ref } from 'vue'
-  import { getGoodList, GodListResponseData, GoodListQueryParam } from '../api/goodsControl'
+  import { deleteGoods, getGoodList, GodListResponseData, GoodListQueryParam } from '../api/goodsControl'
   import router from '../router'
 
   const queryParam = ref({
@@ -31,6 +32,25 @@
 
   function addTimeFormat(addTime: string) {
     return new Date(addTime).toLocaleString()
+  }
+
+  async function deleteGoodsBtn(goodId: number) {
+    try {
+      await ElMessageBox.confirm('确认删除该商品?', '删除商品', {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      })
+      const res = await deleteGoods(goodId)
+      if (res.meta.status !== 200) {
+        ElMessage.error(res.meta.msg)
+      } else {
+        ElMessage.success(res.meta.msg)
+      }
+      getGoodListResponse.value = await getGoodList(queryParam.value)
+    } catch (e) {
+      ElMessage.info('取消删除!')
+    }
   }
 
   getGoodListResponse.value = await getGoodList(queryParam.value)
@@ -83,7 +103,7 @@
             </el-icon>
             编辑
           </el-button>
-          <el-button size="small" type="danger">
+          <el-button size="small" type="danger" @click="deleteGoodsBtn(scope.row.goods_id)">
             <el-icon size="20">
               <i-ic-sharp-delete-forever />
             </el-icon>

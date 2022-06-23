@@ -163,3 +163,8 @@ export async function postGoods(goods: Good) {
   const { data: res } = await axios.post('goods', goods)
   return res
 }
+
+export async function deleteGoods(goodsId: number) {
+  const { data: res } = await axios.delete(`goods/${ goodsId }`)
+  return res
+}
