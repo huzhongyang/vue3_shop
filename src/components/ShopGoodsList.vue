@@ -65,7 +65,7 @@
     </el-row>
 
     <!-- 商品列表 -->
-    <el-table :data="getGoodListResponse.goods" border stripe lazy fit f>
+    <el-table :data="getGoodListResponse.goods" border stripe lazy table-layout="auto">
       <el-table-column type="index" label="#" />
       <el-table-column prop="goods_name" label="商品名称" min-width="400px" />
       <el-table-column prop="goods_price" label="商品价格(元)" />

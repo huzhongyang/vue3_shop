@@ -148,7 +148,8 @@ export interface Good {
   upd_time: bigint,
   hot_number: number,
   is_promote: boolean,
-  goods_cat: string
+  goods_cat: string,
+  pics?: { pic: string } []
 }
 
 export async function getGoodList(queryParam: GoodListQueryParam) {

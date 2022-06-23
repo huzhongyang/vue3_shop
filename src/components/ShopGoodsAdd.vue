@@ -1,6 +1,6 @@
 <script setup lang="ts">
 
-  import { CascaderProps, ElForm, ElMessage, ExpandTrigger, FormRules } from 'element-plus'
+  import { CascaderProps, ElForm, ElMessage, ExpandTrigger, FormRules, UploadFile } from 'element-plus'
   import { Ref } from 'vue'
   import { CategoryAttribute, getCategoryAttributes, getGoodsCategoryList, Good, Goods } from '../api/goodsControl'
 
@@ -14,8 +14,9 @@
     goods_weight: 0,
     goods_state: null,
     add_time: '',
-    goods_cat: ''
-  }) as Ref<Good>
+    goods_cat: '',
+    pics: []
+  }) as unknown as Ref<Good>
   const goodsFormRef = ref() as Ref<InstanceType<typeof ElForm>>
   const goodsFormRules = ref({
     goods_name: [{
@@ -56,6 +57,11 @@
     return cascaderSelected.value[2]
   })
   const categoryAttributes = ref() as Ref<[CategoryAttribute]>
+  const uploadHeardes = ref({
+    Authorization: window.localStorage.getItem('loginToken')
+  })
+  const previewPictureDialogVisable = ref(false)
+  let previewURL = ref('')
 
   function cascaderSelectedChanged() {
     if (cascaderSelected.value.length !== 3) cascaderSelected.value = []
@@ -84,6 +90,35 @@
         categoryAttributes.value = await getCategoryAttributes(catId.value, 'only')
         break
     }
+  }
+
+  // 图片预览
+  function handlePreview(uploadFile: UploadFile) {
+    console.log(uploadFile)
+    const res = uploadFile.response as { data: { tmp_path: string }, meta: object }
+    previewURL.value = `http://45.32.250.233:8888/${ res.data.tmp_path }`
+    previewPictureDialogVisable.value = !previewPictureDialogVisable.value
+    console.log(previewURL)
+  }
+
+  // 图片移除
+  function handleRemove(uploadFile: UploadFile) {
+    const res = uploadFile.response as any
+    const tmp_path = res.data.tmp_path
+    goodsData.value.pics?.forEach((e, index) => {
+      if (e.pic === tmp_path) goodsData.value.pics?.splice(index, 1)
+    })
+  }
+
+  function uploadSuccess(response: any) {
+    if (response.meta.status === 200) {
+      ElMessage.success(response.meta.msg)
+      goodsData.value.pics?.push({ pic: response.data.tmp_path })
+    }
+  }
+
+  function uploadError(error: Error) {
+    console.log(error)
   }
 
   goodsCategoryData.value = await getGoodsCategoryList({}) as [Goods]
@@ -139,17 +174,47 @@
             </el-form-item>
           </el-tab-pane>
           <el-tab-pane label="商品参数" name="1">Config</el-tab-pane>
-          <el-tab-pane label="商品属性" name="2">Role</el-tab-pane>
-          <el-tab-pane label="商品图片" name="3">Task</el-tab-pane>
+          <el-tab-pane label="商品属性" name="2">
+            <el-form-item v-for="item in categoryAttributes" :key="item.attr_id" :label="item.attr_name">
+              <el-input v-model="item.attr_vals" />
+            </el-form-item>
+          </el-tab-pane>
+          <el-tab-pane label="商品图片" name="3">
+            <!-- 上传图片 -->
+            <el-upload :headers="uploadHeardes"
+                       :on-preview="handlePreview"
+                       :on-remove="handleRemove"
+                       action="http://45.32.250.233:8888/api/private/v1/upload"
+                       list-type="picture-card"
+                       :on-success="uploadSuccess"
+                       :on-error="uploadError"
+            >
+              <el-button type="primary">Click to upload</el-button>
+              <template #tip>
+                <div class="el-upload__tip">
+                  jpg/png files with a size less than 500kb
+                </div>
+              </template>
+            </el-upload>
+          </el-tab-pane>
           <el-tab-pane label="商品内容" name="4">Task</el-tab-pane>
         </el-tabs>
       </el-form>
     </el-row>
   </el-card>
+
+  <!-- 图片预览 -->
+  <el-dialog v-model="previewPictureDialogVisable"
+             title="图片预览"
+             width="50%"
+  >
+    <el-image style=" height: 100%" :src="previewURL" fit="fill" />
+  </el-dialog>
 </template>
 
 <style scoped>
   .el-form {
     width: 100%;
   }
+
 </style>
