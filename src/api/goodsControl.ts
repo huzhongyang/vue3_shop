@@ -124,3 +124,47 @@ export interface ExpandRowData {
   tagInputData: string,
   data: AttributeData
 }
+
+export type GoodListQueryParam = {
+  pagenum: number,
+  pagesize: number,
+  query?: string
+}
+
+export interface GodListResponseData {
+  total: number,
+  pagenum: number,
+  goods: [Good]
+}
+
+export interface Good {
+  goods_id: number,
+  goods_name: string,
+  goods_price: number,
+  goods_number: number,
+  goods_weight: number,
+  goods_state: null,
+  add_time: string,
+  upd_time: bigint,
+  hot_number: number,
+  is_promote: boolean,
+  goods_cat: string,
+  pics?: { pic: string } [],
+  goods_introduce?: string
+}
+
+export async function getGoodList(queryParam: GoodListQueryParam) {
+  const { data: res } = await axios.get('goods', { params: queryParam })
+  if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
+  return res.data as GodListResponseData
+}
+
+export async function postGoods(goods: Good) {
+  const { data: res } = await axios.post('goods', goods)
+  return res
+}
+
+export async function deleteGoods(goodsId: number) {
+  const { data: res } = await axios.delete(`goods/${ goodsId }`)
+  return res
+}

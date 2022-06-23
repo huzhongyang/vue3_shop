@@ -45,7 +45,7 @@
             <el-menu-item v-for="(asideMenuItem) in asideMenu.children"
                           :key="asideMenuItem.id"
                           :index="`${asideMenuItem.id}`"
-                          :route="asideMenuItem.path"
+                          :route="`/home/${asideMenuItem.path}`"
             >
               {{ asideMenuItem.authName }}
             </el-menu-item>
