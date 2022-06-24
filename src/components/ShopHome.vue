@@ -55,7 +55,7 @@
       </el-aside>
 
       <!-- main -->
-      <el-main>
+      <el-main style="height: 100%;">
         <!-- 异步组件用 Suspense 包裹 -->
         <Suspense>
           <router-view />
@@ -154,6 +154,6 @@
   }
 
   .el-menu {
-    height: 100%;
+    height: calc(100% - 32px);
   }
 </style>

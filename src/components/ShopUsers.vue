@@ -386,7 +386,7 @@
 
 <style scoped>
   .main-box {
-    height: 100%;
+    /*height: 100%;*/
     margin: 15px 0;
     min-width: 1100px;
   }

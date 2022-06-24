@@ -34,15 +34,9 @@
 
       <!-- 底部按钮 -->
       <div class="login-footer">
-        <el-button @click="resetForm(loginFormRef)"
-                   auto-insert-space
-                   type="info"
-        >重置
+        <el-button @click="resetForm(loginFormRef)" auto-insert-space type="info">重置
         </el-button>
-        <el-button @click="login(loginFormRef)"
-                   type="primary"
-                   auto-insert-space
-        >登录
+        <el-button @click="login(loginFormRef)" type="primary" auto-insert-space>登录
         </el-button>
       </div>
     </div>
@@ -91,7 +85,7 @@
   })
 
   // 登录按钮
-  function login (loginFormRef: FormInstance) {
+  function login(loginFormRef: FormInstance) {
     if (!loginFormRef) return
     loginFormRef.validate(async (validate) => {
       if (!validate) return false
@@ -103,7 +97,7 @@
   }
 
   // 重置按钮
-  function resetForm (loginFormRef: FormInstance) {
+  function resetForm(loginFormRef: FormInstance) {
     if (!loginFormRef) return
     loginFormRef.resetFields()
   }
