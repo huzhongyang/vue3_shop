@@ -15,3 +15,7 @@ export const checkMobile = (rule: any, value: any, callBack: any) => {
   }
   callBack(new Error('请输入正确的手机号'))
 }
+
+export function timeFormat(addTime: string) {
+  return new Date(addTime).toLocaleString()
+}

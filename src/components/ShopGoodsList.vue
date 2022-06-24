@@ -3,6 +3,7 @@
   import { Ref } from 'vue'
   import { deleteGoods, getGoodList, GodListResponseData, GoodListQueryParam } from '../api/goodsControl'
   import router from '../router'
+  import { timeFormat } from '../utils'
 
   const queryParam = ref({
     query: '',
@@ -28,10 +29,6 @@
   async function handleCurrentChange(value: number) {
     queryParam.value.pagenum = value
     getGoodListResponse.value = await getGoodList(queryParam.value)
-  }
-
-  function addTimeFormat(addTime: string) {
-    return new Date(addTime).toLocaleString()
   }
 
   async function deleteGoodsBtn(goodId: number) {
@@ -92,7 +89,7 @@
       <el-table-column prop="goods_weight" label="商品重量" />
       <el-table-column prop="add_time" label="创建时间" width="150px">
         <template #default="scope">
-          {{ addTimeFormat(scope.row.add_time) }}
+          {{ timeFormat(scope.row.add_time) }}
         </template>
       </el-table-column>
       <el-table-column label="操作" width="160px">
