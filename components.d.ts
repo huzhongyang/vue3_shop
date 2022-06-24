@@ -64,6 +64,7 @@ declare module '@vue/runtime-core' {
     ShopHome: typeof import('./src/components/ShopHome.vue')['default']
     ShopHomeMain: typeof import('./src/components/ShopHomeMain.vue')['default']
     ShopOrder: typeof import('./src/components/ShopOrder.vue')['default']
+    ShopReport: typeof import('./src/components/ShopReport.vue')['default']
     ShopRightsList: typeof import('./src/components/ShopRightsList.vue')['default']
     ShopRoleList: typeof import('./src/components/ShopRoleList.vue')['default']
     ShopUsers: typeof import('./src/components/ShopUsers.vue')['default']

@@ -11,9 +11,11 @@
   "dependencies": {
     "@tinymce/tinymce-vue": "^4",
     "axios": "^0.27.2",
+    "echarts": "^5.3.3",
     "element-plus": "^2.2.2",
     "eslint-plugin-prettier": "^4.0.0",
     "vue": "^3.2.37",
+    "vue-echarts": "^6.1.0",
     "vue-global-api": "^0.4.1",
     "vue-router": "^4.0.15"
   },

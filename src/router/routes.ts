@@ -8,6 +8,7 @@ import ShopGoodsParam from "../components/ShopGoodsParam.vue";
 import ShopHome from '../components/ShopHome.vue'
 import ShopHomeMain from '../components/ShopHomeMain.vue'
 import ShopOrder from '../components/ShopOrder.vue'
+import ShopReport from "../components/ShopReport.vue";
 import ShopRightsList from '../components/ShopRightsList.vue'
 import ShopRoleList from '../components/ShopRoleList.vue'
 import ShopUsers from '../components/ShopUsers.vue'
@@ -62,6 +63,10 @@ const routes: Array<RouteRecordRaw> = [{
     name: 'orders',
     path: 'orders',
     component: ShopOrder
+  }, {
+    name: 'reports',
+    path: 'reports',
+    component: ShopReport
   }]
 }]
 
