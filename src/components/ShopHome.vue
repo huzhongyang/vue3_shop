@@ -115,7 +115,7 @@
   // })
 
   function logout() {
-    window.localStorage.removeItem('loginToken')
+    window.sessionStorage.removeItem('loginToken')
     // 会使页面出现短暂空白 并且耗费性能
     // window.location.reload()
     router.push('/login')

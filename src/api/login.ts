@@ -28,7 +28,9 @@ export default {
    * @returns {Promise<LoginResponse>}
    */
   async login(loginDate: LoginDate) {
+
     const { data: res }: { data: LoginResponse } = await axios.post('login', loginDate)
     return res
+
   }
 }

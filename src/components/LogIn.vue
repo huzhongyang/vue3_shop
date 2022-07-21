@@ -90,9 +90,10 @@
     loginFormRef.validate(async (validate) => {
       if (!validate) return false
       const res = await postLogin.login(loginForm.value)
-      if (res.meta.status !== 200) ElMessage.error(res.meta.msg)
-      window.localStorage.setItem('loginToken', res.data?.token as string)
-      await router.push('/home')
+      if (res.meta.status !== 200) return ElMessage.error(res.meta.msg)
+      ElMessage.success(res.meta.msg)
+      window.sessionStorage.setItem('loginToken', res.data!.token)
+      await router.push({ name: 'home' })
     })
   }
 

@@ -11,7 +11,8 @@ const router = createRouter({
 
 router.beforeEach((to, _, next) => {
   if (to.name === 'login') return next()
-  if (!window.localStorage.getItem('loginToken')) return next({ name: 'login' })
+  if (!window.sessionStorage.getItem('loginToken')) return next({ name: 'login' })
+  console.log(to.path)
   next()
 })
 
